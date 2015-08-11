@@ -1,0 +1,4 @@
+[submodule "server/alchemyapi_node"]
+	path = server/alchemyapi_node
+	url = https://github.com/kauffecup/alchemyapi_node.git
+	branch = news-support

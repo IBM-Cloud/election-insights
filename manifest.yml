@@ -1,0 +1,11 @@
+applications:
+- services:
+  - AlchemyAPI-2e
+  disk_quota: 1024M
+  host: newsinsights
+  name: newsinsights
+  command: node server/app.js
+  path: .
+  domain: mybluemix.net
+  instances: 1
+  memory: 256M

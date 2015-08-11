@@ -1,0 +1,34 @@
+{
+  "name": "news-insights",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node server/app.js",
+    "build": "gulp build",
+    "dev": "node server/app.js; gulp dev"
+  },
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "express": "^4.13.3",
+    "flux": "^2.0.3",
+    "keymirror": "^0.1.1",
+    "morgan": "^1.6.1",
+    "object-assign": "^3.0.0",
+    "qs": "^4.0.0",
+    "react": "^0.13.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^5.2.0",
+    "babelify": "^6.1.3",
+    "browserify": "^11.0.1",
+    "csswring": "^3.0.5",
+    "envify": "^3.4.0",
+    "gulp": "^3.9.0",
+    "gulp-less": "^3.0.3",
+    "gulp-postcss": "^5.1.9",
+    "gulp-uglify": "^1.2.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.2.3"
+  }
+}
