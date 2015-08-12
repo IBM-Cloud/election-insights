@@ -14,11 +14,13 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-import React     from 'react';
-import Actions   from './Actions';
-import Constants from './constants/Constants';
+import React         from 'react';
+import Actions       from './Actions';
+import Constants     from './constants/Constants';
+import BubbleChart   from './components/BubbleChart';
+import InsightsStore from './stores/InsightsStore';
 
-class MyApp extends React.Component {
+class NewsInsights extends React.Component {
   constructor (props) {
     super(props);
     this.state = this._getStateObj();
@@ -26,15 +28,24 @@ class MyApp extends React.Component {
   }
 
   render () {
-    return <div className="news-insights"></div>;
+    return (
+      <div className="news-insights">
+        <BubbleChart data={this.state.insights} />
+      </div>
+    );
+  }
+
+   /** When first in the page, set up change handlers */
+  componentDidMount () {
+    InsightsStore.addChangeListener(this._onChange);
+    Actions.getInsights();
   }
 
   _getStateObj () {
-    return {}
-  }
-
-  componentDidMount () {
+    return {
+      insights: InsightsStore.getInsights()
+    }
   }
 };
 
-React.render(<MyApp />, document.body);
+React.render(<NewsInsights />, document.body);

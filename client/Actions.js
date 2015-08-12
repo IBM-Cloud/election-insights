@@ -16,8 +16,14 @@
 
 import Dispatcher from './Dispatcher';
 import Constants  from './constants/Constants';
+import requester  from './requester';
 
 var Actions = {
+  getInsights: function () {
+    requester.fetchInsights().then(insights => {
+      Dispatcher.dispatch({ actionType: Constants.INSIGHTS_LOADED, insights: insights });
+    });
+  }
 }
 
 module.exports = Actions;

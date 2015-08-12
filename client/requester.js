@@ -14,8 +14,23 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-import keyMirror from 'keymirror';
+import request from 'superagent';
 
-module.exports = keyMirror({
-  INSIGHTS_LOADED: null
-});
+var requester = {
+  /**
+   * Load the rolled up news for either entities, concepts, or keywords
+   */
+  fetchInsights: function () {
+    return new Promise(function (resolve, reject) {
+      request.get('/newsinsights').end(function (err, res) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res.body);
+        }
+      });
+    });
+  }
+}
+
+module.exports = requester;

@@ -14,8 +14,33 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-import keyMirror from 'keymirror';
+var _Store = require('./_Store');
+var Dispatcher = require('../Dispatcher');
+var Constants = require('../constants/Constants');
+var assign = require('object-assign');
 
-module.exports = keyMirror({
-  INSIGHTS_LOADED: null
+var _insights = [];
+
+function setInsights (newInsights) {
+  _insights = newInsights;
+}
+
+var InsightStore = assign({}, _Store, {
+  getInsights: function () {
+    return _insights;
+  }
 });
+
+Dispatcher.register(function(action) {
+  switch(action.actionType) {
+    case Constants.INSIGHTS_LOADED:
+      setInsights(action.insights);
+      InsightStore.emitChange();
+      break;
+
+    default:
+      // no op
+  }
+});
+
+module.exports = InsightStore;
