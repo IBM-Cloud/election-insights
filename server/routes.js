@@ -18,6 +18,8 @@ var express = require('express');
 var router = express.Router();
 var alchemy = require('./alchemy');
 var _ = require('lodash');
+var fs = require('fs');
+var fakeResponse = JSON.parse(fs.readFileSync(__dirname + '/fakeResponse.json'));
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -30,25 +32,29 @@ router.get('/', function (req, res) {
  *   start
  *   end
  *   type - one of 'entities', 'concepts', or 'keywords'. defaults to 'concepts' if not sepcified
+ *   grouping - if type is 'entities' can specify to group by 'type' or 'text'
  */
 router.get('/newsinsights', function (req, res) {
   var start = req.query.start || 'now-1d';
   var end = req.query.end || 'now';
-  var type = req.query.type || 'concepts';
+  var type = req.query.type || 'entities';
+  var grouping = type === 'entities' ? (req.query.grouping || 'text') : 'text';
 
-  alchemy.news({
-    start: start,
-    end: end,
-    maxResults: 100,
-    return: getReturnInfoArray(type).join(',')
-  }, function (response) {
-    if (response.status === 'ERROR') {
-      res.status(400);
-      res.json(response);
-    } else {
-      res.json(collapseResponse(response));
-    }
-  });
+  // alchemy.news({
+  //   start: start,
+  //   end: end,
+  //   maxResults: 1000,
+  //   return: getReturnInfoArray(type).join(',')
+  // }, function (response) {
+  //   if (response.status === 'ERROR') {
+  //     res.status(400);
+  //     res.json(response);
+  //   } else {
+  //     res.json(collapseResponse(response));
+  //   }
+  // });
+  
+  res.json(collapseResponse(fakeResponse, type, grouping));
 });
 
 /**
@@ -56,7 +62,7 @@ router.get('/newsinsights', function (req, res) {
  * to an array of names and values. The values represent how many times that entity/concept/keyword
  * is represented in the response.
  */
-function collapseResponse (response) {
+function collapseResponse (response, type, grouping) {
   // first build a map of {name: value} pairs
   var map = {};
   var arr = _(response.result.docs)
@@ -64,10 +70,10 @@ function collapseResponse (response) {
     .flatten()
     .forEach(function (d) {
       var newAmount = type === 'entities' ? d.count : 1;
-      if (map[d.text]) {
-        map[d.text] += newAmount;
+      if (map[d[grouping]]) {
+        map[d[grouping]] += newAmount;
       } else {
-        map[d.text] = newAmount;
+        map[d[grouping]] = newAmount;
       }
     })
     .value();
@@ -76,7 +82,15 @@ function collapseResponse (response) {
   var awesome = _.forOwn(map, function (value, key) {
     newResponse.push({name: key, value: value});
   });
-  return newResponse.filter(function(d) {return d.value > 2});
+  return newResponse.sort(function (a, b) {
+    if (a.value > b.value) {
+      return -1;
+    } else if (a.value < b.value) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }).slice(0, Math.min(100, newResponse.length));
 }
 
 /**

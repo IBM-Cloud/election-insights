@@ -31,7 +31,9 @@ var alchemyapi;
 var userProvided;
 if (process.env.VCAP_SERVICES && process.env.VCAP_SERVICES['user-provided']) {
   userProvided = process.env.VCAP_SERVICES['user-provided'];
+  console.log('found VCAP_SERVICES');
 } else {
+  console.log('looking for config.json');
   try {
     var config = require('./config.json');
     userProvided = config['user-provided'];
