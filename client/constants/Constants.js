@@ -17,7 +17,6 @@
 import keyMirror from 'keymirror';
 
 module.exports = keyMirror({
-  TAB_SWITCH_CONCEPTS: null,
   TAB_SWITCH_KEYWORDS: null,
   TAB_SWITCH_ENTITIES: null,
   INSIGHTS_LOADED: null

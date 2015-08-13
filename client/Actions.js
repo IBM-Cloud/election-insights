@@ -19,11 +19,6 @@ import Constants  from './constants/Constants';
 import requester  from './requester';
 
 var Actions = {
-  toggleConcepts: function () {
-    Dispatcher.dispatch({ actionType: Constants.TAB_SWITCH_CONCEPTS });
-    this.getInsights('concepts');
-  },
-
   toggleKeywords: function () {
     Dispatcher.dispatch({ actionType: Constants.TAB_SWITCH_KEYWORDS });
     this.getInsights('keywords');

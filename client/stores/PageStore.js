@@ -19,7 +19,7 @@ import Dispatcher from '../Dispatcher';
 import Constants  from '../constants/Constants';
 import assign     from 'object-assign';
 
-var _openTab = 'concepts';
+var _openTab = 'keywords';
 var _subTab = '';
 
 function setOpenTab (newTab) {
@@ -42,12 +42,6 @@ var PageStore = assign({}, _Store, {
 
 Dispatcher.register(function(action) {
   switch(action.actionType) {
-   case Constants.TAB_SWITCH_CONCEPTS:
-      setOpenTab('concepts');
-      setSubTab('');
-      PageStore.emitChange();
-      break;
-
    case Constants.TAB_SWITCH_KEYWORDS:
       setOpenTab('keywords');
       setSubTab('');

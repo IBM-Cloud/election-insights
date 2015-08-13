@@ -42,7 +42,7 @@ class NewsInsights extends React.Component {
   componentDidMount () {
     InsightsStore.addChangeListener(this._onChange);
     PageStore.addChangeListener(this._onChange);
-    Actions.toggleConcepts();
+    Actions.toggleKeywords();
   }
 
   /** When removing, clean up change handlers */

@@ -19,9 +19,6 @@ import Actions        from '../Actions';
 import classNames     from 'classnames';
 
 var navTabs = [{
-  display: 'concepts',
-  action: Actions.toggleConcepts.bind(Actions)
-}, {
   display: 'keywords',
   action: Actions.toggleKeywords.bind(Actions)
 }, {
