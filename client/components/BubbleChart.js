@@ -23,10 +23,7 @@ class BubbleChart extends React.Component {
   }
 
   componentDidMount () {
-    bubbleChartD3.create(this.getDOMNode(), {
-      width: '100%',
-      height: '100%'
-    }, this.getChartState());
+    bubbleChartD3.create(this.getDOMNode(), this.getChartState());
   }
 
   componentDidUpdate () {

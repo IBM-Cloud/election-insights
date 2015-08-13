@@ -20,11 +20,14 @@ var BubbleChartD3 = {};
 var format = d3.format(',');
 var color = d3.scale.category20c();
 
-BubbleChartD3.create = function (el, props, state) {
+/**
+ * Prepare D3 town for proper operation
+ * @param  {DOM}    el    The Dom Node container that's going to house this bubble chart
+ * @param  {Object} state An object containing the data
+ */
+BubbleChartD3.create = function (el, state) {
   var svg = d3.select(el).append('svg')
-    .attr('class', 'bubble-chart-d3')
-    .attr('width', props.width)
-    .attr('height', props.height);
+    .attr('class', 'bubble-chart-d3');
 
   svg.append('g')
     .attr('class', 'news-bubbles');
@@ -32,45 +35,54 @@ BubbleChartD3.create = function (el, props, state) {
   this.update(el, state);
 }
 
+/**
+ * Do the actual bubble drawing
+ * @param  {DOM}    el    The Dom Node container that's going to house this bubble chart
+ * @param  {Object} state An object containing the data
+ */
 BubbleChartD3.update = function (el, state) {
   var data = state.data;
-
+  // reference to our <g> container
   var g = d3.select(el).selectAll('.news-bubbles');
-
+  // remove all existing bubbles
+  g.selectAll('.bubble-container').remove();
+  // create our bubble layout
   var bubble = d3.layout.pack()
     .sort(null)
     .size([el.offsetWidth, el.offsetHeight])
     .padding(1.5);
-
+  // calculate the size and positioning of each bubble
   var node = g.selectAll('.news-bubble')
     .data(bubble.nodes({children: data})
       .filter(d => !d.children && d.r)
     );
-
+  // create our bubble containers
   node.enter()
     .append('g')
     .attr('class', 'bubble-container')
     .attr('transform', d => ('translate(' + d.x + ',' + d.y + ')'));
-
+  // add a title to each bubble
   node.append('title')
     .text(d => d.name + ': ' + format(d.value));
-
+  // create the actual circle
   node.append('circle')
     .attr('r', d => d.r )
     .style('fill', d => color(d.name));
-
+  // if you like it then you should've put a label on it
   node.append('text')
     .attr('dy', '.3em')
     .style('text-anchor', 'middle')
     .text(d => d.name);
-
+  // i dont really know what this does!
   node.exit()
     .remove();
 }
 
-BubbleChartD3.destroy = function (el) {
-  // Any clean-up would go here
-  // in this example there is nothing to do
-}
+/**
+ * Any clean up would go here for now there is nothing to do
+ * @param  {[type]} el [description]
+ * @return {[type]}    [description]
+ */
+BubbleChartD3.destroy = function (el) {}
 
 module.exports = BubbleChartD3;

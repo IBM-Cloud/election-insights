@@ -20,9 +20,10 @@ var requester = {
   /**
    * Load the rolled up news for either entities, concepts, or keywords
    */
-  fetchInsights: function () {
+  fetchInsights: function (type, grouping) {
+    grouping = type === 'entities' ? grouping : null;
     return new Promise(function (resolve, reject) {
-      request.get('/newsinsights').end(function (err, res) {
+      request.get('/newsinsights').query({type: type, grouping: grouping}).end(function (err, res) {
         if (err) {
           reject(err);
         } else {

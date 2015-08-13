@@ -48,8 +48,38 @@ a {
   width: 100%;
   margin: 0 auto;
   padding: 0;
+  display: flex;
+  flex-direction: column;
   .bubble-chart-container {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .bubble-chart-d3 {
+    flex: 1;
+    width: 100%;
+  }
+  .news-bubbles {
     height: 100%;
     width: 100%;
+  }
+
+  .nav-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px 20%;
+    margin: 0;
+    list-style: none;
+    justify-content: space-around;
+
+    .tab {
+      cursor: pointer;
+      width: 100px;
+      text-align: center;
+      &.open, &:hover {
+        color: @accent-color;
+      }
+    }
   }
 }
