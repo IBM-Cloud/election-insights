@@ -14,11 +14,23 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-import d3 from 'd3';
+import d3      from 'd3';
+import Actions from '../Actions';
 
 var BubbleChartD3 = {};
 var format = d3.format(',');
-var color = d3.scale.category20c();
+// define a color scale for our sentiment analysis
+var color = d3.scale.quantize()
+  .domain([-1, 1])
+  // .range(["#67000d", "#08306b"]);
+  .range([
+    // reds from dark to light
+    "#67000d", "#a50f15", "#cb181d", "#ef3b2c", "#fb6a4a", "#fc9272", "#fcbba1", "#fee0d2",
+    //neutral grey
+    "#f0f0f0",
+    // blues from light to dark
+    "#deebf7", "#c6dbef", "#9ecae1", "#6baed6", "#4292c6", "#2171b5", "#08519c", "#08306b"
+  ]);
 
 /**
  * Prepare D3 town for proper operation
@@ -67,7 +79,7 @@ BubbleChartD3.update = function (el, state) {
   // create the actual circle
   node.append('circle')
     .attr('r', d => d.r )
-    .style('fill', d => color(d.name));
+    .style('fill', d => color(d.sentiment));
   // if you like it then you should've put a label on it
   node.append('text')
     .attr('dy', '.3em')

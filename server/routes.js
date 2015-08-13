@@ -31,7 +31,7 @@ router.get('/', function (req, res) {
  * Query params are:
  *   start
  *   end
- *   type - one of 'entities', 'concepts', or 'keywords'. defaults to 'concepts' if not sepcified
+ *   type - one of 'entities', or 'keywords'. defaults to 'entities' if not sepcified
  *   grouping - if type is 'entities' can specify to group by 'type' or 'text'
  */
 router.get('/newsinsights', function (req, res) {
@@ -63,7 +63,7 @@ router.get('/newsinsights', function (req, res) {
  * is represented in the response.
  */
 function collapseResponse (response, type, grouping) {
-  // first build a map of {name: value} pairs
+  // first build a map of {name: {value: number, sentiment: Array.<number>}}
   var map = {};
   var arr = _(response.result.docs)
     .map(function (d) {return d.source.enriched.url[type]})
@@ -71,17 +71,28 @@ function collapseResponse (response, type, grouping) {
     .forEach(function (d) {
       var newAmount = type === 'entities' ? d.count : 1;
       if (map[d[grouping]]) {
-        map[d[grouping]] += newAmount;
+        map[d[grouping]].value += newAmount;
+        map[d[grouping]].sentiment.push(d.sentiment.score);
       } else {
-        map[d[grouping]] = newAmount;
+        map[d[grouping]] = {
+          value: newAmount,
+          sentiment: [d.sentiment.score]
+        };
       }
     })
     .value();
   // convert the map into an array of {name: name, value: value} objects
   var newResponse = [];
-  var awesome = _.forOwn(map, function (value, key) {
-    newResponse.push({name: key, value: value});
+  var awesome = _.forOwn(map, function (obj, key) {
+    newResponse.push({
+      name: key,
+      value: obj.value,
+      sentiment: (_.reduce(obj.sentiment, function (total, n) {
+        return total + n;
+      }) / obj.sentiment.length)
+    });
   });
+  // only return the top 100 sorted by value
   return newResponse.sort(function (a, b) {
     if (a.value > b.value) {
       return -1;
@@ -112,10 +123,6 @@ function getReturnInfoArray (type) {
         'enriched.url.entities.entity.sentiment',
         'enriched.url.entities.entity.count'
       );
-      break;
-
-    case 'concepts':
-      returnInfo = baseReturnInfo.concat('enriched.url.concepts.concept.text');
       break;
 
     case 'keywords':
