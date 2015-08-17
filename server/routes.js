@@ -17,7 +17,6 @@
 var express = require('express');
 var router = express.Router();
 var alchemy = require('./alchemy');
-var _ = require('lodash');
 var fs = require('fs');
 var fakeResponse = JSON.parse(fs.readFileSync(__dirname + '/fakeResponse.json'));
 var entitiesDB = require('./entitiesDB');
@@ -31,9 +30,11 @@ router.get('/', function (req, res) {
  * Load news articles and flatten them in to name/value pairs for either entities, concepts, or keywords.
  */
 router.get('/newsinsights', function (req, res) {
-  entitiesDB.viewAsync('ni_design', 'ni_entity_count_and_sentiment', {stale: "ok", reduce: true, group: true, group_level: 1}).then(function (args) {
-    console.log(args[0].rows.length);
-  })
+  entitiesDB.getLastHour().then(function (results) {
+    res.json(results);
+  }).catch(function (e) {
+    res.json(e);
+  });
 });
 
 module.exports = router;

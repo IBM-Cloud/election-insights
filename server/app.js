@@ -38,3 +38,4 @@ app.listen(app.get('port'), function() {
 });
 
 // entitiesDB.init().then(newsScraper.getEntities);
+entitiesDB.init();

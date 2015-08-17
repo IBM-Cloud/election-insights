@@ -37,7 +37,8 @@ var newsScraper = {
     alchemy.news({
       start: start,
       end: end,
-      maxResults: 100,
+      maxResults: 10,
+      q: {enriched: {url: { enrichedTitle: { taxonomy_ : {label: 'technology'}}}}},
       return: returnInfo.join(',')
     }, function (response) {
       if (response.status === 'ERROR') {
