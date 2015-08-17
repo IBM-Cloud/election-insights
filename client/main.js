@@ -38,7 +38,7 @@ class NewsInsights extends React.Component {
    /** When first in the page, set up change handlers */
   componentDidMount () {
     InsightsStore.addChangeListener(this._onChange);
-    Actions.toggleKeywords();
+    Actions.getInsights();
   }
 
   /** When removing, clean up change handlers */
