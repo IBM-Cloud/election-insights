@@ -29,17 +29,13 @@ var alchemyapi;
  * If running locally, this'll be found in config.json
  */
 var userProvided;
-if (process.env.VCAP_SERVICES && process.env.VCAP_SERVICES['user-provided']) {
-  userProvided = process.env.VCAP_SERVICES['user-provided'];
-  console.log('found VCAP_SERVICES');
+if (process.env.VCAP_SERVICES ) {
+  userProvided = JSON.parse(process.env.VCAP_SERVICES)['user-provided'];
 } else {
-  console.log('looking for config.json');
   try {
     var config = require('./config.json');
     userProvided = config['user-provided'];
-  } catch (e) {
-    console.error(e);
-  }
+  } catch (e) { console.error(e); }
 }
 
 /**

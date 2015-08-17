@@ -15,25 +15,40 @@
 //------------------------------------------------------------------------------
 
 var express = require('express');
-var router = express.Router();
 var alchemy = require('./alchemy');
 var _ = require('lodash');
-var fs = require('fs');
-var fakeResponse = JSON.parse(fs.readFileSync(__dirname + '/fakeResponse.json'));
 var entitiesDB = require('./entitiesDB');
 
-/* GET home page. */
-router.get('/', function (req, res) {
-  res.render('index');
-});
+var returnInfo = [
+  'enriched.url.title',
+  'enriched.url.url',
+  'enriched.url.text',
+  'enriched.url.entities.entity.sentiment.score',
+  'enriched.url.entities.entity.count',
+  'enriched.url.entities.entity.text'
+];
 
-/**
- * Load news articles and flatten them in to name/value pairs for either entities, concepts, or keywords.
- */
-router.get('/newsinsights', function (req, res) {
-  entitiesDB.viewAsync('ni_design', 'ni_entity_count_and_sentiment', {stale: "ok", reduce: true, group: true, group_level: 1}).then(function (args) {
-    console.log(args[0].rows.length);
-  })
-});
 
-module.exports = router;
+var newsScraper = {
+  getEntities: function () {
+    var start = 'now-1h';
+    var end = 'now';
+
+    alchemy.news({
+      start: start,
+      end: end,
+      maxResults: 100,
+      return: returnInfo.join(',')
+    }, function (response) {
+      if (response.status === 'ERROR') {
+        console.log('Alchemy reponse failed: ');
+        console.error(response);
+      } else {
+        console.log('loaded ' + response.result.docs.length + ' articles from AlchemyAPI');
+        entitiesDB.uploadArticlesFromDocs(response.result.docs);
+      }
+    }.bind(this));
+  }
+}
+
+module.exports = newsScraper;

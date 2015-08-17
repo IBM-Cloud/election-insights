@@ -1,6 +1,7 @@
 applications:
 - services:
   - AlchemyAPI-2e
+  - mongolab
   disk_quota: 1024M
   host: newsinsights
   name: newsinsights

@@ -20,6 +20,8 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var logger = require('morgan');
 var routes = require('./routes');
+var newsScraper = require('./newsScraper');
+var entitiesDB = require('./entitiesDB');
 
 /** configure the express server */
 var app = express();
@@ -34,3 +36,5 @@ app.use('/', routes);
 app.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+// entitiesDB.init().then(newsScraper.getEntities);
