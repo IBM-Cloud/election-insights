@@ -18,9 +18,7 @@ import React         from 'react';
 import Actions       from './Actions';
 import Constants     from './constants/Constants';
 import BubbleChart   from './components/BubbleChart';
-import NavTabs       from './components/NavTabs';
 import InsightsStore from './stores/InsightsStore';
-import PageStore     from './stores/PageStore';
 
 class NewsInsights extends React.Component {
   constructor (props) {
@@ -32,7 +30,6 @@ class NewsInsights extends React.Component {
   render () {
     return (
       <div className="news-insights">
-        <NavTabs openTab={this.state.openTab} subTab={this.state.subTab} />
         <BubbleChart data={this.state.insights} />
       </div>
     );
@@ -41,21 +38,17 @@ class NewsInsights extends React.Component {
    /** When first in the page, set up change handlers */
   componentDidMount () {
     InsightsStore.addChangeListener(this._onChange);
-    PageStore.addChangeListener(this._onChange);
     Actions.toggleKeywords();
   }
 
   /** When removing, clean up change handlers */
   componentWillUnmount () {
     InsightsStore.removeChangeListener(this._onChange);
-    PageStore.removeChangeListener(this._onChange);
   }
 
   _getStateObj () {
     return {
-      insights: InsightsStore.getInsights(),
-      openTab: PageStore.getOpenTab(),
-      subTab: PageStore.getSubTab()
+      insights: InsightsStore.getInsights()
     }
   }
 };

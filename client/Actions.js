@@ -19,18 +19,8 @@ import Constants  from './constants/Constants';
 import requester  from './requester';
 
 var Actions = {
-  toggleKeywords: function () {
-    Dispatcher.dispatch({ actionType: Constants.TAB_SWITCH_KEYWORDS });
-    this.getInsights('keywords');
-  },
-
-  toggleEntities: function (grouping) {
-    Dispatcher.dispatch({ actionType: Constants.TAB_SWITCH_ENTITIES, grouping: grouping });
-    this.getInsights('entities', grouping);
-  },
-
-  getInsights: function (type, grouping) {
-    requester.fetchInsights(type, grouping).then(insights => {
+  getInsights: function () {
+    requester.fetchInsights().then(insights => {
       Dispatcher.dispatch({ actionType: Constants.INSIGHTS_LOADED, insights: insights });
     });
   }
