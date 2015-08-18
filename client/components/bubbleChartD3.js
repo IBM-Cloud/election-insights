@@ -75,7 +75,7 @@ BubbleChartD3.update = function (el, state) {
     .attr('transform', d => ('translate(' + d.x + ',' + d.y + ')'));
   // add a title to each bubble
   node.append('title')
-    .text(d => d.name + ': ' + format(d.value));
+    .text(d => d._id + ': ' + format(d.value));
   // create the actual circle
   node.append('circle')
     .attr('r', d => d.r )
@@ -84,7 +84,7 @@ BubbleChartD3.update = function (el, state) {
   node.append('text')
     .attr('dy', '.3em')
     .style('text-anchor', 'middle')
-    .text(d => d.name);
+    .text(d => d._id);
   // i dont really know what this does!
   node.exit()
     .remove();

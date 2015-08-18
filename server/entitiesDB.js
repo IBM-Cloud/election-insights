@@ -19,7 +19,7 @@ var mongoose = require('mongoose');
 var String = mongoose.Schema.Types.String;
 var Number = mongoose.Schema.Types.Number;
 
-// define schema and model
+// define schemas and models
 var articleSchema = new mongoose.Schema({
   _id: String,
   title: String,
@@ -64,6 +64,24 @@ var EntitiesDB = {
     });
   },
 
+  aggregateEntities: function () {
+    return new Promise(function (resolve, reject) {
+      Entity.aggregate(
+        { $group: { _id: '$text', value: { $sum: '$count'}, sentiment: { $avg: '$sentiment'} } },
+        { $sort: { value: -1} },
+        { $limit: 100 },
+        function (err, res) {
+          if (err) {
+            console.error(err);
+            reject(err);
+          } else {
+            resolve(res);
+          }
+        }
+      );
+    });
+  },
+
   /**
    * Given an array of documents from alchemy, convert them into Articles
    * as defined in the Schema, and upload them to our database. If an article
@@ -88,7 +106,7 @@ var EntitiesDB = {
           entityPrimitives.forEach(function (ep) {
             Entity.findByIdAndUpdate(ep._id, ep, {upsert: true}, function (args) {
               var mattdamon;
-            })
+            });
           });
         }
       }
