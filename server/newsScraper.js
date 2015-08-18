@@ -16,8 +16,7 @@
 
 var express = require('express');
 var alchemy = require('./alchemy');
-var _ = require('lodash');
-var entitiesDB = require('./entitiesDB');
+var Promise = require('bluebird');
 
 var returnInfo = [
   'enriched.url.title',
@@ -31,24 +30,27 @@ var returnInfo = [
 
 var newsScraper = {
   getEntities: function () {
-    var start = 'now-1h';
-    var end = 'now';
+    return new Promise(function (resolve, reject) {
+      var start = 'now-1h';
+      var end = 'now';
+      alchemy.news({
+        start: start,
+        end: end,
+        maxResults: 100,
+        // q: {enriched: {url: { enrichedTitle: { taxonomy_ : {label: 'technology'}}}}},
+        return: returnInfo.join(',')
+      }, function (response) {
+        if (response.status === 'ERROR') {
+          console.log('Alchemy reponse failed: ');
+          console.error(response);
+          reject(response);
+        } else {
+          console.log('loaded ' + response.result.docs.length + ' articles from AlchemyAPI');
+          resolve(response.result.docs);
+        }
+      }.bind(this));
+    });
 
-    alchemy.news({
-      start: start,
-      end: end,
-      maxResults: 1000,
-      // q: {enriched: {url: { enrichedTitle: { taxonomy_ : {label: 'technology'}}}}},
-      return: returnInfo.join(',')
-    }, function (response) {
-      if (response.status === 'ERROR') {
-        console.log('Alchemy reponse failed: ');
-        console.error(response);
-      } else {
-        console.log('loaded ' + response.result.docs.length + ' articles from AlchemyAPI');
-        entitiesDB.uploadArticlesFromDocs(response.result.docs);
-      }
-    }.bind(this));
   }
 }
 

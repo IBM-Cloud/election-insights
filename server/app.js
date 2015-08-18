@@ -37,5 +37,9 @@ app.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-// entitiesDB.init().then(newsScraper.getEntities);
+// entitiesDB.init().then(function () {
+//   return newsScraper.getEntities();
+// }).then(function (entities) {
+//   return entitiesDB.uploadArticlesFromDocs(entities);
+// });
 entitiesDB.init();
