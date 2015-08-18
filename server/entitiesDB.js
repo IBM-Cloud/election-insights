@@ -64,12 +64,16 @@ var EntitiesDB = {
     });
   },
 
-  aggregateEntities: function () {
+  aggregateEntities: function (start, end, limit) {
+    start = start || 0;
+    end = end || 9999999999999;
+    limit = limit || 100;
     return new Promise(function (resolve, reject) {
       Entity.aggregate(
+        { $match: { date: { $gte: new Date(start) , $lt: new Date(end) } } },
         { $group: { _id: '$text', value: { $sum: '$count'}, sentiment: { $avg: '$sentiment'} } },
         { $sort: { value: -1} },
-        { $limit: 100 },
+        { $limit: limit },
         function (err, res) {
           if (err) {
             console.error(err);
@@ -95,19 +99,21 @@ var EntitiesDB = {
     docs.forEach(function (doc) {
       if (doc) {
         var articleAndEntitityPrimitives = this._adaptFromAlchemyDoc(doc);
-        var articlePrimitive = articleAndEntitityPrimitives.article;
-        if (articlePrimitive) {
-          Article.findByIdAndUpdate(articlePrimitive._id, articlePrimitive, {upsert: true}, function (args) {
-            var mattdamon;
-          });
-        }
-        var entityPrimitives = articleAndEntitityPrimitives.entities;
-        if (entityPrimitives && entityPrimitives.length) {
-          entityPrimitives.forEach(function (ep) {
-            Entity.findByIdAndUpdate(ep._id, ep, {upsert: true}, function (args) {
+        if (articleAndEntitityPrimitives) {
+          var articlePrimitive = articleAndEntitityPrimitives.article;
+          if (articlePrimitive) {
+            Article.findByIdAndUpdate(articlePrimitive._id, articlePrimitive, {upsert: true}, function (args) {
               var mattdamon;
             });
-          });
+          }
+          var entityPrimitives = articleAndEntitityPrimitives.entities;
+          if (entityPrimitives && entityPrimitives.length) {
+            entityPrimitives.forEach(function (ep) {
+              Entity.findByIdAndUpdate(ep._id, ep, {upsert: true}, function (args) {
+                var mattdamon;
+              });
+            });
+          }
         }
       }
     }.bind(this));

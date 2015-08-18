@@ -46,4 +46,5 @@ function getAndParseArticles () {
   });
 }
 
-getAndParseArticles();
+// getAndParseArticles();
+entitiesDB.init();

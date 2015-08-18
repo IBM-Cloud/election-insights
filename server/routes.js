@@ -30,7 +30,10 @@ router.get('/', function (req, res) {
  * Load news articles and flatten them in to name/value pairs for either entities, concepts, or keywords.
  */
 router.get('/newsinsights', function (req, res) {
-  entitiesDB.aggregateEntities().then(function (results) {
+  var start = req.query.start && parseInt(req.query.start);
+  var end = req.query.end && parseInt(req.query.end);
+  var limit = req.query.limit && parseInt(req.query.limit);
+  entitiesDB.aggregateEntities(start, end, limit).then(function (results) {
     res.json(results);
   }).catch(function (e) {
     res.json(e);
