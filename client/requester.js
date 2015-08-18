@@ -20,15 +20,18 @@ var requester = {
   /**
    * Load the rolled up news for either entities, concepts, or keywords
    */
-  fetchInsights: function () {
+  fetchInsights: function (start, end, limit) {
     return new Promise(function (resolve, reject) {
-      request.get('/newsinsights').end(function (err, res) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(res.body);
+      request.get('/newsinsights')
+        .query({start: start, end: end, limit: 100})
+        .end(function (err, res) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(res.body);
+          }
         }
-      });
+      );
     });
   }
 }

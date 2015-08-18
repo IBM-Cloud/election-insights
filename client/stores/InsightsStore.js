@@ -20,14 +20,32 @@ var Constants = require('../constants/Constants');
 var assign = require('object-assign');
 
 var _insights = [];
+var _start = 0;
+var _end = 0;
 
 function setInsights (newInsights) {
   _insights = newInsights;
 }
 
+function setStart(newStart) {
+  _start = newStart;
+}
+
+function setEnd(newEnd) {
+  _end = newEnd;
+}
+
 var InsightStore = assign({}, _Store, {
   getInsights: function () {
     return _insights;
+  },
+
+  getStart: function () {
+    return _start;
+  },
+
+  getEnd: function () {
+    return _end;
   }
 });
 
@@ -35,6 +53,12 @@ Dispatcher.register(function(action) {
   switch(action.actionType) {
     case Constants.INSIGHTS_LOADED:
       setInsights(action.insights);
+      InsightStore.emitChange();
+      break;
+
+    case Constants.LOAD_INSIGHTS:
+      setStart(action.start);
+      setEnd(action.end);
       InsightStore.emitChange();
       break;
 

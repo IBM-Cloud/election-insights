@@ -17,5 +17,6 @@
 import keyMirror from 'keymirror';
 
 module.exports = keyMirror({
-  INSIGHTS_LOADED: null
+  INSIGHTS_LOADED: null,
+  LOAD_INSIGHTS: null
 });

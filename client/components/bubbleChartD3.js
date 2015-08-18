@@ -51,6 +51,12 @@ BubbleChartD3.create = function (el, state) {
  * Do the actual bubble drawing
  * @param  {DOM}    el    The Dom Node container that's going to house this bubble chart
  * @param  {Object} state An object containing the data
+ *   must contain an array called `data` that houses objects that look like:
+ *   {
+ *     _id: String,
+ *     value: number,
+ *     sentiment: number
+ *   }
  */
 BubbleChartD3.update = function (el, state) {
   var data = state.data;

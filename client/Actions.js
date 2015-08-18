@@ -19,11 +19,29 @@ import Constants  from './constants/Constants';
 import requester  from './requester';
 
 var Actions = {
-  getInsights: function () {
-    requester.fetchInsights().then(insights => {
+  getInsights: function (start, end, limit) {
+    start = start || getTodayTime();
+    end = end || getTomorrowTime();
+    Dispatcher.dispatch({ actionType: Constants.LOAD_INSIGHTS, start: start, end: end });
+    requester.fetchInsights(start, end, limit).then(insights => {
       Dispatcher.dispatch({ actionType: Constants.INSIGHTS_LOADED, insights: insights });
     });
   }
+}
+
+/* Helper methods for date string formatting */
+function getToday () {
+  return new Date((new Date()).toDateString());
+}
+function getTodayTime () {
+  return getToday().getTime();
+}
+function getTomorrow () {
+  var today = getToday();
+  return new Date(today.getUTCFullYear(), today.getMonth(), today.getDate() + 1);
+}
+function getTomorrowTime () {
+  return getTomorrow().getTime();
 }
 
 module.exports = Actions;
