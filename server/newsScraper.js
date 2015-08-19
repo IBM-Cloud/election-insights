@@ -34,7 +34,7 @@ var newsScraper = {
       alchemy.news({
         start: start,
         end: end,
-        maxResults: 1000,
+        maxResults: 400,
         'q.enriched.url.enrichedTitle.taxonomy.taxonomy_': '|label=elections,score=>0.75|',
         return: returnInfo.join(',')
       }, function (response) {

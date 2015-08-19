@@ -26,6 +26,19 @@ var Actions = {
     requester.fetchInsights(start, end, limit).then(insights => {
       Dispatcher.dispatch({ actionType: Constants.INSIGHTS_LOADED, insights: insights });
     });
+  },
+
+  getMinAndMax: function () {
+    requester.fetchMinAndMax().then(minAndMax => {
+      Dispatcher.dispatch({ actionType: Constants.MIN_AND_MAX, min: minAndMax.min, max: minAndMax.max });
+    });
+  },
+
+  initialize: function () {
+    requester.fetchMinAndMax().then(minAndMax => {
+      Dispatcher.dispatch({ actionType: Constants.MIN_AND_MAX, min: minAndMax.min, max: minAndMax.max });
+      this.getInsights(minAndMax.min, minAndMax.max);
+    });
   }
 }
 

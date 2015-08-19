@@ -14,14 +14,102 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-import React         from 'react';
-import Actions       from '../Actions';
-import Constants     from '../constants/Constants';
+import React      from 'react';
+import classnames from 'classnames';
+import Actions    from '../Actions';
+import Constants  from '../constants/Constants';
 
 class NewsInsights extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      pos: {x: 0, w: 0},
+      dragging: false,
+      dragEntry: ''
+    };
+    this.onHandleLeftMouseDown  = this._onMouseDown.bind(this, 'leftHandle');
+    this.onHandleRightMouseDown = this._onMouseDown.bind(this, 'rightHandle');
+    this.onSliderMouseDown      = this._onMouseDown.bind(this, 'slider');
+    this.onMouseMove = this._onMouseMove.bind(this);
+    this.onMouseUp = this._onMouseUp.bind(this);
+  }
+
+  componentWillReceiveProps () {
+    var myNode = React.findDOMNode(this);
+    var x = (this.props.start - this.props.min) / (this.props.max - this.props.min) * myNode.clientWidth;
+    var e = (this.props.end   - this.props.min) / (this.props.max - this.props.min) * myNode.clientWidth;
+
+    this.setState({pos: {x: x, w: e - x }});
+  }
+
+  _onMouseDown (dragEntry, e) {
+    this._curX = e.clientX;
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onMouseUp);
+    this.setState({dragging: true, dragEntry: dragEntry});
+  }
+
+  _onMouseMove (e) {
+    var clientX = e.clientX;
+    var dx = clientX - this._curX;
+    this._curX = clientX;
+
+    var newX = this.state.pos.x;
+    var newW = this.state.pos.w;
+
+    switch (this.state.dragEntry) {
+      case 'leftHandle':
+        newX += dx;
+        newW -= dx
+        break;
+
+      case 'rightHandle':
+        newW += dx;
+        break;
+
+      case 'slider':
+        newX += dx;
+        break;
+    }
+
+    this.setState({ pos: { x: newX, w: newW}});
+  }
+
+  _onMouseUp (e) {
+    this.setState({dragging: false});
+
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mouseup', this.onMouseUp);
+
+    var myNode = React.findDOMNode(this);
+    var start = this.state.pos.x / myNode.clientWidth * (this.props.max - this.props.min) + this.props.min;
+    var end   = (this.state.pos.x + this.state.pos.w) / myNode.clientWidth * (this.props.max - this.props.min) + this.props.min;
+    Actions.getInsights(start, end, 100);
+  }
+
   render () {
+    var rangeClasses = classnames('range-picker', {dragging: this.state.dragging});
     return (
-      <div className='range-picker'>
+      <div className="range-picker-container">
+        <div className={rangeClasses}>
+          <div className="range-background"></div>
+          <div className="range-slider"
+            onMouseDown={this.onSliderMouseDown}
+            style={{
+              left: this.state.pos.x,
+              width: this.state.pos.w
+            }} />
+          <div className="handle left"
+            onMouseDown={this.onHandleLeftMouseDown}
+            style={{
+              left: this.state.pos.x
+            }} />
+          <div className="handle right"
+            onMouseDown={this.onHandleRightMouseDown}
+            style={{
+              left: this.state.pos.x + this.state.pos.w
+            }} />
+        </div>
       </div>
     );
   }

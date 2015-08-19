@@ -31,7 +31,7 @@ class NewsInsights extends React.Component {
   render () {
     return (
       <div className="news-insights">
-        <RangePicker start={this.state.start} end={this.state.end} />
+        <RangePicker min={this.state.min} max={this.state.max} start={this.state.start} end={this.state.end} />
         <BubbleChart data={this.state.insights} />
       </div>
     );
@@ -40,7 +40,7 @@ class NewsInsights extends React.Component {
    /** When first in the page, set up change handlers */
   componentDidMount () {
     InsightsStore.addChangeListener(this._onChange);
-    Actions.getInsights();
+    Actions.initialize();
   }
 
   /** When removing, clean up change handlers */
@@ -52,7 +52,9 @@ class NewsInsights extends React.Component {
     return {
       insights: InsightsStore.getInsights(),
       start: InsightsStore.getStart(),
-      end: InsightsStore.getEnd()
+      end: InsightsStore.getEnd(),
+      min: InsightsStore.getMin(),
+      max: InsightsStore.getMax()
     }
   }
 };

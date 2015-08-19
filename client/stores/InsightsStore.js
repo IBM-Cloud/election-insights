@@ -22,6 +22,8 @@ var assign = require('object-assign');
 var _insights = [];
 var _start = 0;
 var _end = 0;
+var _min = 0;
+var _max = 0;
 
 function setInsights (newInsights) {
   _insights = newInsights;
@@ -35,6 +37,14 @@ function setEnd(newEnd) {
   _end = newEnd;
 }
 
+function setMin(newMin) {
+  _min = newMin;
+}
+
+function setMax(newMax) {
+  _max = newMax;
+}
+
 var InsightStore = assign({}, _Store, {
   getInsights: function () {
     return _insights;
@@ -46,6 +56,14 @@ var InsightStore = assign({}, _Store, {
 
   getEnd: function () {
     return _end;
+  },
+
+  getMin: function () {
+    return _min;
+  },
+
+  getMax: function () {
+    return _max;
   }
 });
 
@@ -59,6 +77,12 @@ Dispatcher.register(function(action) {
     case Constants.LOAD_INSIGHTS:
       setStart(action.start);
       setEnd(action.end);
+      InsightStore.emitChange();
+      break;
+
+    case Constants.MIN_AND_MAX:
+      setMin(action.min);
+      setMax(action.max);
       InsightStore.emitChange();
       break;
 

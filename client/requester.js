@@ -33,6 +33,21 @@ var requester = {
         }
       );
     });
+  },
+
+  /**
+   * Load the min and max date range so we can render the date slider
+   */
+  fetchMinAndMax: function () {
+    return new Promise(function (resolve, reject) {
+      request.get('/minandmax').end(function (err, res) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res.body);
+        }
+      })
+    })
   }
 }
 
