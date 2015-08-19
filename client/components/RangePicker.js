@@ -17,30 +17,13 @@
 import React         from 'react';
 import Actions       from '../Actions';
 import Constants     from '../constants/Constants';
-import DateTimeField from 'react-bootstrap-datetimepicker';
 
 class NewsInsights extends React.Component {
   render () {
     return (
       <div className='range-picker'>
-        <div className='start-picker'>
-          Start
-          <DateTimeField dateTime={'' + this.props.start} onChange={this.onStartChange.bind(this)} />
-        </div>
-        <div className='end-picker'>
-          End
-          <DateTimeField dateTime={'' + this.props.end} onChange={this.onEndChange.bind(this)} />
-        </div>
       </div>
     );
-  }
-
-  onStartChange (x) {
-    Actions.getInsights(x, this.props.end, 100);
-  }
-
-  onEndChange (x) {
-    Actions.getInsights(this.props.start, x, 100);
   }
 }
 
