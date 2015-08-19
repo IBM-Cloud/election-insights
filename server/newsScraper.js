@@ -21,23 +21,21 @@ var Promise = require('bluebird');
 var returnInfo = [
   'enriched.url.title',
   'enriched.url.url',
-  'enriched.url.text',
   'enriched.url.entities.entity.sentiment.score',
   'enriched.url.entities.entity.count',
   'enriched.url.entities.entity.text'
 ];
 
-
 var newsScraper = {
   getEntities: function () {
     return new Promise(function (resolve, reject) {
-      var start = 'now-1h';
+      var start = 'now-1d';
       var end = 'now';
       alchemy.news({
         start: start,
         end: end,
         maxResults: 1000,
-        // q: {enriched: {url: { enrichedTitle: { taxonomy_ : {label: 'technology'}}}}},
+        'q.enriched.url.enrichedTitle.taxonomy.taxonomy_': '|label=elections,score=>0.75|',
         return: returnInfo.join(',')
       }, function (response) {
         if (response.status === 'ERROR') {
