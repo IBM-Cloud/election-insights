@@ -65,10 +65,10 @@ var EntitiesDB = {
   },
 
   aggregateEntities: function (start, end, limit) {
-    start = start || 0;
-    end = end || 9999999999999;
-    limit = limit || 100;
     return new Promise(function (resolve, reject) {
+      start = start || 0;
+      end = end || 9999999999999;
+      limit = limit || 100;
       Entity.aggregate(
         { $match: { date: { $gte: new Date(start) , $lt: new Date(end) } } },
         { $group: { _id: '$text', value: { $sum: '$count'}, sentiment: { $avg: '$sentiment'} } },
@@ -83,6 +83,36 @@ var EntitiesDB = {
           }
         }
       );
+    });
+  },
+
+  getMinAndMaxDates: function () {
+    return Promise.join(this._getMinDate(), this._getMaxDate(), function (min, max) {
+      return ({ min: min, max: max});
+    });
+  },
+
+  _getMinDate: function () {
+    return new Promise(function (resolve, reject) {
+      Article.find({}, 'date', {limit: 1, sort: {date: 1}}, function (e, docs) {
+        if (e) {
+          reject(e);
+        } else {
+          resolve(docs[0].date.getTime());
+        }
+      });
+    });
+  },
+
+  _getMaxDate: function () {
+    return new Promise(function (resolve, reject) {
+      Article.find({}, 'date', {limit: 1, sort: {date: -1}}, function (e, docs) {
+        if (e) {
+          reject(e);
+        } else {
+          resolve(docs[0].date.getTime());
+        }
+      });
     });
   },
 

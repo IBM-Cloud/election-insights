@@ -17,8 +17,6 @@
 var express = require('express');
 var router = express.Router();
 var alchemy = require('./alchemy');
-var fs = require('fs');
-var fakeResponse = JSON.parse(fs.readFileSync(__dirname + '/fakeResponse.json'));
 var entitiesDB = require('./entitiesDB');
 
 /* GET home page. */
@@ -38,6 +36,15 @@ router.get('/newsinsights', function (req, res) {
   }).catch(function (e) {
     res.json(e);
   });
+});
+
+/** Load the min and max date range */
+router.get('/minandmax', function (req, res) {
+  entitiesDB.getMinAndMaxDates().then(function (minAndMax) {
+    res.json(minAndMax)
+  }).catch(function (e) {
+    res.json(e);
+  })
 });
 
 module.exports = router;
