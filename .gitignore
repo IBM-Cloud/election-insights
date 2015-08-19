@@ -3,4 +3,5 @@ server/config.json
 public/bundle.js
 public/*.css
 *.sublime-workspace
+*.sublime-project
 *.log
