@@ -99,7 +99,7 @@ class NewsInsights extends React.Component {
 
     var start = this._posToTime(this.state.pos.x);
     var end = this._posToTime(this.state.pos.x + this.state.pos.w);
-    Actions.getInsights(start, end, 100);
+    Actions.getInsights(start, end);
   }
 
   /** Convert a time in ms to an x position relative to the beginning of the

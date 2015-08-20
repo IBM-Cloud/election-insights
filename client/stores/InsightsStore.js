@@ -24,6 +24,7 @@ var _start = 0;
 var _end = 0;
 var _min = 0;
 var _max = 0;
+var _numBubbles = 100;
 
 function setInsights (newInsights) {
   _insights = newInsights;
@@ -45,6 +46,10 @@ function setMax(newMax) {
   _max = newMax;
 }
 
+function setNumBubbles (newBubbles) {
+  _numBubbles = newBubbles;
+}
+
 var InsightStore = assign({}, _Store, {
   getInsights: function () {
     return _insights;
@@ -64,6 +69,10 @@ var InsightStore = assign({}, _Store, {
 
   getMax: function () {
     return _max;
+  },
+
+  getNumBubbles: function () {
+    return _numBubbles;
   }
 });
 
@@ -77,6 +86,7 @@ Dispatcher.register(function(action) {
     case Constants.LOAD_INSIGHTS:
       setStart(action.start);
       setEnd(action.end);
+      setNumBubbles(action.numBubbles);
       InsightStore.emitChange();
       break;
 

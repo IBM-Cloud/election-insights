@@ -23,7 +23,7 @@ var requester = {
   fetchInsights: function (start, end, limit) {
     return new Promise(function (resolve, reject) {
       request.get('/newsinsights')
-        .query({start: start, end: end, limit: 100})
+        .query({start: start, end: end, limit: limit})
         .end(function (err, res) {
           if (err) {
             reject(err);

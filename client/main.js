@@ -19,6 +19,7 @@ import Actions       from './Actions';
 import Constants     from './constants/Constants';
 import BubbleChart   from './components/BubbleChart';
 import RangePicker   from './components/RangePicker';
+import BubbleSlider  from './components/BubbleSlider';
 import InsightsStore from './stores/InsightsStore';
 
 class NewsInsights extends React.Component {
@@ -31,7 +32,12 @@ class NewsInsights extends React.Component {
   render () {
     return (
       <div className="news-insights">
-        <RangePicker min={this.state.min} max={this.state.max} start={this.state.start} end={this.state.end} />
+        <RangePicker
+          min={this.state.min}
+          max={this.state.max}
+          start={this.state.start}
+          end={this.state.end} />
+        <BubbleSlider numBubbles={this.state.numBubbles} />
         <BubbleChart data={this.state.insights} />
       </div>
     );
@@ -54,7 +60,8 @@ class NewsInsights extends React.Component {
       start: InsightsStore.getStart(),
       end: InsightsStore.getEnd(),
       min: InsightsStore.getMin(),
-      max: InsightsStore.getMax()
+      max: InsightsStore.getMax(),
+      numBubbles: InsightsStore.getNumBubbles()
     }
   }
 };
