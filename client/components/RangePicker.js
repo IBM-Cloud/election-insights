@@ -34,10 +34,10 @@ class NewsInsights extends React.Component {
     this.onMouseUp = this._onMouseUp.bind(this);
   }
 
-  componentWillReceiveProps () {
+  componentWillReceiveProps (props) {
     var myNode = React.findDOMNode(this);
-    var x = (this.props.start - this.props.min) / (this.props.max - this.props.min) * myNode.clientWidth;
-    var e = (this.props.end   - this.props.min) / (this.props.max - this.props.min) * myNode.clientWidth;
+    var x = (props.start - props.min) / (props.max - props.min) * myNode.clientWidth;
+    var e = (props.end   - props.min) / (props.max - props.min) * myNode.clientWidth;
 
     this.setState({pos: {x: x, w: e - x }});
   }
