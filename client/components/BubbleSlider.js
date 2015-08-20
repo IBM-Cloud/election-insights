@@ -30,9 +30,9 @@ class NewsInsights extends React.Component {
           className="slider"
           type="range"
           min="1"
-          max="1000"
+          max="500"
           value={this.props.numBubbles}
-          steps="1000"
+          steps="500"
           onChange={this.onChange.bind(this)} />
       </div>
     );
