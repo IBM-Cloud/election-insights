@@ -113,8 +113,8 @@ class NewsInsights extends React.Component {
 
   /** Convert an x position relative to the beginning of the slider to a time in ms */
   _posToTime (pos) {
-    var node = this.refs.rangePicker.getDOMNode();
-    return pos / node.clientWidth * (this.props.max - this.props.min) + this.props.min;
+    var node = this.refs.rangePicker && this.refs.rangePicker.getDOMNode();
+    return node ? pos / node.clientWidth * (this.props.max - this.props.min) + this.props.min : 0;
   }
 
   render () {
@@ -135,11 +135,17 @@ class NewsInsights extends React.Component {
             style={{
               left: this.state.pos.x
             }} />
+          <div className="value-container start" style={{left: this.state.pos.x}}>
+            <div className="value start">{moment(this._posToTime(this.state.pos.x)).format('MMM DD hh:mm a')}</div>
+          </div>
           <div className="handle right"
             onMouseDown={this.onHandleRightMouseDown}
             style={{
               left: this.state.pos.x + this.state.pos.w
             }} />
+          <div className="value-container end" style={{left: this.state.pos.x + this.state.pos.w}}>
+            <div className="value end">{moment(this._posToTime(this.state.pos.x + this.state.pos.w)).format('MMM DD hh:mm a')}</div>
+          </div>
         </div>
         <span>{moment(this.props.max).format('MMM DD hh:mm a')}</span>
       </div>
