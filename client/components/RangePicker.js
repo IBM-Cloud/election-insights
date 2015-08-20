@@ -121,7 +121,7 @@ class NewsInsights extends React.Component {
     var rangeClasses = classnames('range-picker', {dragging: this.state.dragging});
     return (
       <div className="range-picker-container">
-        <span>{moment(this.props.min).format('MMM DD, h:mma')}</span>
+        <span className="label min">{moment(this.props.min).format('MMM DD, h:mma')}</span>
         <div className={rangeClasses} ref="rangePicker">
           <div className="range-background"></div>
           <div className="range-slider"
@@ -147,7 +147,7 @@ class NewsInsights extends React.Component {
             <div className="value end">{moment(this._posToTime(this.state.pos.x + this.state.pos.w)).format('MMM DD, h:mma')}</div>
           </div>
         </div>
-        <span>{moment(this.props.max).format('MMM DD, h:mma')}</span>
+        <span className="label max">{moment(this.props.max).format('MMM DD, h:mma')}</span>
       </div>
     );
   }

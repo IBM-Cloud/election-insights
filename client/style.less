@@ -17,6 +17,11 @@
 @accent-color: #0099ff;
 @secondary-text-color: #c1c1c1;
 
+@boring-color1: #c6dbef;
+@boring-color2: #f0f0f0;
+@semi-exciting1: #08306b;
+@semi-exciting2: #2171b5;
+
 // get the page ready
 * { outline: none; box-sizing: border-box; }
 body { padding: 0; margin: 0; }
@@ -74,21 +79,34 @@ a {
     user-select: none;
     display: flex;
 
+    .label {
+      &.min { margin-right: 5px; }
+      &.max { margin-left:  5px; }
+    }
+
     .range-picker {
       position: relative;
       flex: 1;
       height: 100%;
 
       .range-background {
-        background: red;
+        position: relative;
         width: 100%;
-        height: 100%;
+        height: 60%;
+        top: 20%;
+        background: repeating-linear-gradient(
+          45deg,
+          @boring-color1,
+          @boring-color1 10px,
+          @boring-color2 10px,
+          @boring-color2 20px
+        );
       }
       .handle {
-        height: 100%;
-        width: 2px;
-        background: white;
-        top: 0;
+        height: 120%;
+        width: 4px;
+        background: @secondary-text-color;
+        top: -10%;
         position: absolute;
         cursor: ew-resize;
       }
@@ -103,8 +121,8 @@ a {
         height: 100%;
         position: absolute;
         top: 0;
-        background: blue;
         cursor: move;
+        background: @semi-exciting2;
       }
     }
   }
@@ -113,6 +131,7 @@ a {
     display: flex;
     justify-content: center;
     padding-top: 25px;
+    user-select: none;
 
     .slider {
       width: 400px;
