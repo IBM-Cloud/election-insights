@@ -15,6 +15,7 @@
 //------------------------------------------------------------------------------
 
 import React      from 'react';
+import moment     from 'moment';
 import classnames from 'classnames';
 import Actions    from '../Actions';
 import Constants  from '../constants/Constants';
@@ -92,23 +93,24 @@ class NewsInsights extends React.Component {
   /** Convert a time in ms to an x position relative to the beginning of the
     * slider. Can optionally provide a min and max object. defaults to using props. */
   _timeToPos (time, minAndMax) {
-    var myNode = React.findDOMNode(this);
+    var node = this.refs.rangePicker.getDOMNode();
     var min = minAndMax ? minAndMax.min : this.props.min;
     var max = minAndMax ? minAndMax.max : this.props.max;
-    return (time - min) / (max - min) * myNode.clientWidth;
+    return (time - min) / (max - min) * node.clientWidth;
   }
 
   /** Convert an x position relative to the beginning of the slider to a time in ms */
   _posToTime (pos) {
-    var myNode = React.findDOMNode(this);
-    return pos / myNode.clientWidth * (this.props.max - this.props.min) + this.props.min;
+    var node = this.refs.rangePicker.getDOMNode();
+    return pos / node.clientWidth * (this.props.max - this.props.min) + this.props.min;
   }
 
   render () {
     var rangeClasses = classnames('range-picker', {dragging: this.state.dragging});
     return (
       <div className="range-picker-container">
-        <div className={rangeClasses}>
+        <span>{moment(this.props.min).format('MMM DD hh:mm a')}</span>
+        <div className={rangeClasses} ref="rangePicker">
           <div className="range-background"></div>
           <div className="range-slider"
             onMouseDown={this.onSliderMouseDown}
@@ -127,6 +129,7 @@ class NewsInsights extends React.Component {
               left: this.state.pos.x + this.state.pos.w
             }} />
         </div>
+        <span>{moment(this.props.max).format('MMM DD hh:mm a')}</span>
       </div>
     );
   }
