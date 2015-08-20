@@ -14,6 +14,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
+import moment     from 'moment';
 import Dispatcher from './Dispatcher';
 import Constants  from './constants/Constants';
 import requester  from './requester';
@@ -35,7 +36,7 @@ var Actions = {
   initialize: function () {
     requester.fetchMinAndMax().then(minAndMax => {
       Dispatcher.dispatch({ actionType: Constants.MIN_AND_MAX, min: minAndMax.min, max: minAndMax.max });
-      this.getInsights(minAndMax.min, minAndMax.max);
+      this.getInsights(moment(minAndMax.max).subtract(5, 'hours').unix()*1000, minAndMax.max);
     });
   }
 }
