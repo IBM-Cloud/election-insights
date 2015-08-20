@@ -121,7 +121,7 @@ class NewsInsights extends React.Component {
     var rangeClasses = classnames('range-picker', {dragging: this.state.dragging});
     return (
       <div className="range-picker-container">
-        <span>{moment(this.props.min).format('MMM DD hh:mm a')}</span>
+        <span>{moment(this.props.min).format('MMM DD, h:mma')}</span>
         <div className={rangeClasses} ref="rangePicker">
           <div className="range-background"></div>
           <div className="range-slider"
@@ -136,7 +136,7 @@ class NewsInsights extends React.Component {
               left: this.state.pos.x
             }} />
           <div className="value-container start" style={{left: this.state.pos.x}}>
-            <div className="value start">{moment(this._posToTime(this.state.pos.x)).format('MMM DD hh:mm a')}</div>
+            <div className="value start">{moment(this._posToTime(this.state.pos.x)).format('MMM DD, h:mma')}</div>
           </div>
           <div className="handle right"
             onMouseDown={this.onHandleRightMouseDown}
@@ -144,10 +144,10 @@ class NewsInsights extends React.Component {
               left: this.state.pos.x + this.state.pos.w
             }} />
           <div className="value-container end" style={{left: this.state.pos.x + this.state.pos.w}}>
-            <div className="value end">{moment(this._posToTime(this.state.pos.x + this.state.pos.w)).format('MMM DD hh:mm a')}</div>
+            <div className="value end">{moment(this._posToTime(this.state.pos.x + this.state.pos.w)).format('MMM DD, h:mma')}</div>
           </div>
         </div>
-        <span>{moment(this.props.max).format('MMM DD hh:mm a')}</span>
+        <span>{moment(this.props.max).format('MMM DD, h:mma')}</span>
       </div>
     );
   }
