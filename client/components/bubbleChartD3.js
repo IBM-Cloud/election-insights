@@ -27,12 +27,13 @@ var colorRange = [
 ];
 var colorLegend = colorRange.slice(0).reverse().map((c, i) => {
   var ret = {color: c};
-  if (i===0) {
-    ret.text = 'Postive Sentiment';
-  } else if (i===8) {
-    ret.text = 'Neutral Sentiment';
-  } else if (i===16){
-    ret.text='Negative Sentiment';
+  // TODO don't hardcode these
+  if (i === 0) {
+    ret.text = 'Postive';
+  } else if (i === 8) {
+    ret.text = 'Neutral';
+  } else if (i === 16) {
+    ret.text='Negative';
   } 
   return ret;
 });
@@ -58,9 +59,13 @@ BubbleChartD3.create = function (el, state) {
   svg.append('g')
     .attr('class', 'news-bubbles');
 
+  // create a legend and center it vertically
+  var legendHeight = colorLegend.length * (legendRectSize + legendSpacing) - legendSpacing;
   var legend = svg.append('g')
-    .attr('class', 'legend');
+    .attr('class', 'legend')
+    .attr('transform', 'translate(80,' + (el.offsetHeight - legendHeight)/2  + ')');
 
+  // for each color in the legend, create a g and set its transform
   var legendKeys = legend.selectAll('.legend-key')
     .data(colorLegend)
     .enter()
@@ -72,12 +77,14 @@ BubbleChartD3.create = function (el, state) {
       return 'translate(' + 0 + ',' + vert + ')';
     });
 
+  // for each <g> create a rect and have its color... be the color
   legendKeys.append('rect')
     .attr('width', legendRectSize)
     .attr('height', legendRectSize)
     .style('fill', c => c.color)
     .style('stroke', c => c.color);
 
+  // add necessary labels to the legend
   legendKeys.append('text')
     .attr('x', legendRectSize + legendSpacing)
     .attr('y', legendRectSize - legendSpacing)
