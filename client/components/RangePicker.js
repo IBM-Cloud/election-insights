@@ -22,11 +22,14 @@ import Constants  from '../constants/Constants';
 class NewsInsights extends React.Component {
   constructor (props) {
     super(props);
+    // initial state
     this.state = {
       pos: {x: 0, w: 0},
       dragging: false,
       dragEntry: ''
     };
+    // we need to do this because we need a reference to the bound function
+    // so that we can remove the event listener for it
     this.onHandleLeftMouseDown  = this._onMouseDown.bind(this, 'leftHandle');
     this.onHandleRightMouseDown = this._onMouseDown.bind(this, 'rightHandle');
     this.onSliderMouseDown      = this._onMouseDown.bind(this, 'slider');
@@ -34,14 +37,14 @@ class NewsInsights extends React.Component {
     this.onMouseUp = this._onMouseUp.bind(this);
   }
 
+  /** When the props are updating, set our x and w based on the start and end */
   componentWillReceiveProps (props) {
-    var myNode = React.findDOMNode(this);
-    var x = (props.start - props.min) / (props.max - props.min) * myNode.clientWidth;
-    var e = (props.end   - props.min) / (props.max - props.min) * myNode.clientWidth;
-
+    var x = this._timeToPos(props.start, {min: props.min, max: props.max});
+    var e = this._timeToPos(props.end,   {min: props.min, max: props.max});
     this.setState({pos: {x: x, w: e - x }});
   }
 
+  /** Configure the state and event handlers for proper mouse dragginess */
   _onMouseDown (dragEntry, e) {
     this._curX = e.clientX;
     document.addEventListener('mousemove', this.onMouseMove);
@@ -49,6 +52,7 @@ class NewsInsights extends React.Component {
     this.setState({dragging: true, dragEntry: dragEntry});
   }
 
+  /** When the mouse moves, adjust x and w depending on what is being dragged */
   _onMouseMove (e) {
     var clientX = e.clientX;
     var dx = clientX - this._curX;
@@ -56,7 +60,6 @@ class NewsInsights extends React.Component {
 
     var newX = this.state.pos.x;
     var newW = this.state.pos.w;
-
     switch (this.state.dragEntry) {
       case 'leftHandle':
         newX += dx;
@@ -71,20 +74,34 @@ class NewsInsights extends React.Component {
         newX += dx;
         break;
     }
-
     this.setState({ pos: { x: newX, w: newW}});
   }
 
+  /** On mouse up envoke the Action to re-load the circles */
   _onMouseUp (e) {
     this.setState({dragging: false});
 
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mouseup', this.onMouseUp);
 
-    var myNode = React.findDOMNode(this);
-    var start = this.state.pos.x / myNode.clientWidth * (this.props.max - this.props.min) + this.props.min;
-    var end   = (this.state.pos.x + this.state.pos.w) / myNode.clientWidth * (this.props.max - this.props.min) + this.props.min;
+    var start = this._posToTime(this.state.pos.x);
+    var end = this._posToTime(this.state.pos.x + this.state.pos.w);
     Actions.getInsights(start, end, 100);
+  }
+
+  /** Convert a time in ms to an x position relative to the beginning of the
+    * slider. Can optionally provide a min and max object. defaults to using props. */
+  _timeToPos (time, minAndMax) {
+    var myNode = React.findDOMNode(this);
+    var min = minAndMax ? minAndMax.min : this.props.min;
+    var max = minAndMax ? minAndMax.max : this.props.max;
+    return (time - min) / (max - min) * myNode.clientWidth;
+  }
+
+  /** Convert an x position relative to the beginning of the slider to a time in ms */
+  _posToTime (pos) {
+    var myNode = React.findDOMNode(this);
+    return pos / myNode.clientWidth * (this.props.max - this.props.min) + this.props.min;
   }
 
   render () {
