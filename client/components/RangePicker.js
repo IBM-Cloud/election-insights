@@ -63,16 +63,28 @@ class NewsInsights extends React.Component {
     var newW = this.state.pos.w;
     switch (this.state.dragEntry) {
       case 'leftHandle':
-        newX += dx;
-        newW -= dx
+        var hasWidth = newW - dx > 10;
+        var inLeftBoundary = newX + dx > 0;
+        if (hasWidth && inLeftBoundary) {
+          newX += dx;
+          newW -= dx
+        }
         break;
 
       case 'rightHandle':
-        newW += dx;
+        var hasWidth = newW + dx > 10;
+        var inRightBoundary = newX + newW + dx < this.refs.rangePicker.getDOMNode().clientWidth
+        if (hasWidth && inRightBoundary) {
+          newW += dx;
+        }
         break;
 
       case 'slider':
-        newX += dx;
+        var inLeftBoundary = newX + dx > 0;
+        var inRightBoundary = newW + newX + dx < this.refs.rangePicker.getDOMNode().clientWidth;
+        if (inLeftBoundary && inRightBoundary) {
+          newX += dx;
+        }
         break;
     }
     this.setState({ pos: { x: newX, w: newW}});
