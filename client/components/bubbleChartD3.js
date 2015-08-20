@@ -17,20 +17,34 @@
 import d3      from 'd3';
 import Actions from '../Actions';
 
+var colorRange = [
+  // reds from dark to light
+  "#67000d", "#a50f15", "#cb181d", "#ef3b2c", "#fb6a4a", "#fc9272", "#fcbba1", "#fee0d2",
+  //neutral grey
+  "#f0f0f0",
+  // blues from light to dark
+  "#deebf7", "#c6dbef", "#9ecae1", "#6baed6", "#4292c6", "#2171b5", "#08519c", "#08306b"
+];
+var colorLegend = colorRange.slice(0).reverse().map((c, i) => {
+  var ret = {color: c};
+  if (i===0) {
+    ret.text = 'Postive Sentiment';
+  } else if (i===8) {
+    ret.text = 'Neutral Sentiment';
+  } else if (i===16){
+    ret.text='Negative Sentiment';
+  } 
+  return ret;
+});
+var legendRectSize = 18;
+var legendSpacing = 3;
+
 var BubbleChartD3 = {};
 var format = d3.format(',');
 // define a color scale for our sentiment analysis
 var color = d3.scale.quantize()
   .domain([-1, 1])
-  // .range(["#67000d", "#08306b"]);
-  .range([
-    // reds from dark to light
-    "#67000d", "#a50f15", "#cb181d", "#ef3b2c", "#fb6a4a", "#fc9272", "#fcbba1", "#fee0d2",
-    //neutral grey
-    "#f0f0f0",
-    // blues from light to dark
-    "#deebf7", "#c6dbef", "#9ecae1", "#6baed6", "#4292c6", "#2171b5", "#08519c", "#08306b"
-  ]);
+  .range(colorRange);
 
 /**
  * Prepare D3 town for proper operation
@@ -43,6 +57,31 @@ BubbleChartD3.create = function (el, state) {
 
   svg.append('g')
     .attr('class', 'news-bubbles');
+
+  var legend = svg.append('g')
+    .attr('class', 'legend');
+
+  var legendKeys = legend.selectAll('.legend-key')
+    .data(colorLegend)
+    .enter()
+    .append('g')
+    .attr('class', 'legend-key')
+    .attr('transform', function(d, i) {
+      var height = legendRectSize + legendSpacing;
+      var vert = i * height;
+      return 'translate(' + 0 + ',' + vert + ')';
+    });
+
+  legendKeys.append('rect')
+    .attr('width', legendRectSize)
+    .attr('height', legendRectSize)
+    .style('fill', c => c.color)
+    .style('stroke', c => c.color);
+
+  legendKeys.append('text')
+    .attr('x', legendRectSize + legendSpacing)
+    .attr('y', legendRectSize - legendSpacing)
+    .text(c => c.text);
 
   this.update(el, state);
 }
