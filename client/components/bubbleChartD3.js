@@ -29,7 +29,7 @@ var colorLegend = colorRange.slice(0).reverse().map((c, i) => {
   var ret = {color: c};
   // TODO don't hardcode these
   if (i === 0) {
-    ret.text = 'Postive';
+    ret.text = 'Positive';
   } else if (i === 8) {
     ret.text = 'Neutral';
   } else if (i === 16) {
