@@ -31,7 +31,7 @@ class NewsInsights extends React.Component {
 
   render () {
     return (
-      <div className="news-insights">
+      <div className="news-insights" onClick={Actions.deselectEntity}>
         <RangePicker
           min={this.state.min}
           max={this.state.max}

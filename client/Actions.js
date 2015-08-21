@@ -70,6 +70,10 @@ var Actions = {
     requester.fetchArticlesForEntity(entity, _lastStart, _lastEnd).then(articles => {
       Dispatcher.dispatch({ actionType: Constants.ARTICLES_LOADED, articles: articles, entity: entity });
     })
+  },
+
+  deselectEntity: function () {
+    Dispatcher.dispatch({ actionType: Constants.ENTITY_SELECTED});
   }
 }
 

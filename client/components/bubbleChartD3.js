@@ -45,6 +45,8 @@ var colorLegend = colorRange.slice(0).reverse().map((c, i) => {
   } 
   return ret;
 });
+var selectedColor = '#737373';
+var selectedTextColor = '#d9d9d9';
 
 // define a color scale for our sentiment analysis
 var color = d3.scale.quantize()
@@ -130,7 +132,7 @@ BubbleChartD3.update = function (el, state) {
   myCircles.transition()
     .duration(duration)
     .delay(function(d, i) {delay = i * 7; return delay;})
-    .style('fill', d => color(d.sentiment))
+    .style('fill', d => d.selected ? selectedColor : color(d.sentiment))
     .attr('r', function(d) { return d.r; })
     .remove();
   myTexts.transition()
@@ -140,19 +142,20 @@ BubbleChartD3.update = function (el, state) {
   myGs.enter().append('g')
     .attr('class', 'bubble-container')
     .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
-    .on('click', Actions.loadArticlesForEntity)
+    .on('click', (d,i) => {d3.event.stopPropagation(); Actions.loadArticlesForEntity(d);})
     .transition()
     .duration(duration * 1.2)
     .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
     .style('opacity', 1);   
   myGs.append('circle')
-    .style('fill', d => color(d.sentiment))
+    .style('fill', d => d.selected ? selectedColor : color(d.sentiment))
     .attr('r', function(d) { return 0; })
     .transition()
     .duration(duration * 1.2)
     .attr('r', function(d) { return d.r; });
   myGs.append('text')
     .text(d => d._id)
+    .style('fill', d => d.selected ? selectedTextColor : '#000')
     .attr('dy', '0.3em')
     .style('text-anchor', 'middle');
 

@@ -18,6 +18,7 @@ var _Store = require('./_Store');
 var Dispatcher = require('../Dispatcher');
 var Constants = require('../constants/Constants');
 var assign = require('object-assign');
+var _ = require('lodash');
 
 var _insights = [];
 var _start = 0;
@@ -25,9 +26,21 @@ var _end = 0;
 var _min = 0;
 var _max = 0;
 var _numBubbles = 100;
+var _selectedEntity;
 
 function setInsights (newInsights) {
   _insights = newInsights;
+}
+
+function selectEntity (entity) {
+  if (_selectedEntity) {
+    _selectedEntity.selected = false;
+    _selectedEntity = undefined;
+  }
+  if (entity) {
+    _selectedEntity = _.find(_insights, { _id: entity });
+    _selectedEntity.selected = true;
+  }
 }
 
 function setStart(newStart) {
@@ -94,6 +107,14 @@ Dispatcher.register(function(action) {
       setMin(action.min);
       setMax(action.max);
       InsightStore.emitChange();
+      break;
+
+    case Constants.ENTITY_SELECTED:
+      var alreadySelected = !!_selectedEntity;
+      selectEntity(action.entity);
+      if (alreadySelected || action.entity) {
+        InsightStore.emitChange();
+      }
       break;
 
     default:
