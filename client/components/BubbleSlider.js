@@ -25,7 +25,7 @@ class NewsInsights extends React.Component {
   render () {
     return (
       <div className="bubble-selector">
-        <div className="num-bubble-label">{this.props.numBubbles + (this.props.numBubbles === 1 ? " circle" : " circles")}</div>
+        <div className="num-bubble-label">{this.props.numBubbles + (this.props.numBubbles === 1 ? " Circle" : " Circles")}</div>
         <input
           className="slider"
           type="range"
