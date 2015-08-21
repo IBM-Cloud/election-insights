@@ -15,7 +15,7 @@
 //------------------------------------------------------------------------------
 
 import React      from 'react';
-import moment     from 'moment';
+var moment = require('moment');
 import classnames from 'classnames';
 import Actions    from '../Actions';
 import Constants  from '../constants/Constants';
@@ -119,6 +119,8 @@ class NewsInsights extends React.Component {
 
   render () {
     var rangeClasses = classnames('range-picker', {dragging: this.state.dragging});
+    var start = this._posToTime(this.state.pos.x);
+    var end = this._posToTime(this.state.pos.x + this.state.pos.w);
     return (
       <div className="range-picker-container">
         <span className="label min">{moment(this.props.min).format('MMM DD, h:mma')}</span>
@@ -129,14 +131,14 @@ class NewsInsights extends React.Component {
             style={{
               left: this.state.pos.x,
               width: this.state.pos.w
-            }} />
+            }}>{moment.duration(start - end).humanize()}</div>
           <div className="handle left"
             onMouseDown={this.onHandleLeftMouseDown}
             style={{
               left: this.state.pos.x
             }} />
           <div className="value-container start" style={{left: this.state.pos.x}}>
-            <div className="value start">{moment(this._posToTime(this.state.pos.x)).format('MMM DD, h:mma')}</div>
+            <div className="value start">{moment(start).format('MMM DD, h:mma')}</div>
           </div>
           <div className="handle right"
             onMouseDown={this.onHandleRightMouseDown}
@@ -144,7 +146,7 @@ class NewsInsights extends React.Component {
               left: this.state.pos.x + this.state.pos.w
             }} />
           <div className="value-container end" style={{left: this.state.pos.x + this.state.pos.w}}>
-            <div className="value end">{moment(this._posToTime(this.state.pos.x + this.state.pos.w)).format('MMM DD, h:mma')}</div>
+            <div className="value end">{moment(end).format('MMM DD, h:mma')}</div>
           </div>
         </div>
         <span className="label max">{moment(this.props.max).format('MMM DD, h:mma')}</span>
