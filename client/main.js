@@ -20,6 +20,7 @@ import Constants     from './constants/Constants';
 import BubbleChart   from './components/BubbleChart';
 import RangePicker   from './components/RangePicker';
 import BubbleSlider  from './components/BubbleSlider';
+import ArticleList   from './components/ArticleList';
 import InsightsStore from './stores/InsightsStore';
 
 class NewsInsights extends React.Component {
@@ -38,6 +39,7 @@ class NewsInsights extends React.Component {
           start={this.state.start}
           end={this.state.end} />
         <BubbleChart data={this.state.insights} />
+        <ArticleList articles={this.state.articles} selectedEntity={this.state.selectedEntity} />
         <BubbleSlider numBubbles={this.state.numBubbles} />
       </div>
     );
@@ -61,7 +63,9 @@ class NewsInsights extends React.Component {
       end: InsightsStore.getEnd(),
       min: InsightsStore.getMin(),
       max: InsightsStore.getMax(),
-      numBubbles: InsightsStore.getNumBubbles()
+      numBubbles: InsightsStore.getNumBubbles(),
+      selectedEntity: InsightsStore.getSelectedEntity(),
+      articles: InsightsStore.getArticles()
     }
   }
 };

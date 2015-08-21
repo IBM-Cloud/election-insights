@@ -17,7 +17,7 @@
 import React    from 'react';
 import Actions  from '../Actions';
 
-class NewsInsights extends React.Component {
+class BubbleSlider extends React.Component {
   onChange (e) {
     Actions.changeNumBubbles(e.target.value);
   }
@@ -40,4 +40,4 @@ class NewsInsights extends React.Component {
   }
 }
 
-module.exports = NewsInsights;
+module.exports = BubbleSlider;

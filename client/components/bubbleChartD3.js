@@ -66,6 +66,7 @@ BubbleChartD3.create = function (el, state) {
     .attr('class', 'bubble-legend')
     .style('position', 'absolute')
     .style('height', legendHeight + 'px')
+    .style('width', '100px')
     .style('top', (el.offsetHeight - legendHeight)/2 + 'px')
     .style('left', 60 + 'px');
 

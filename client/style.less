@@ -123,6 +123,33 @@ a {
     }
   }
 
+  .article-list {
+    position: absolute;
+    right: 10px;
+    top: 40px;
+    width: 35%;
+    height: ~"calc(100% - 80px)";
+    background-color: #fff;
+    box-shadow: 0 3px 2px #777;
+    flex-direction: column;
+    display: none;
+    &.has-entity {display: flex;}
+
+    h2 {
+      padding-left: 40px;
+      padding-top: 20px;
+    }
+
+    .the-articles {
+      flex: 1;
+      overflow: auto;
+
+      .article {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
   .bubble-selector {
     display: flex;
     flex-wrap: wrap;

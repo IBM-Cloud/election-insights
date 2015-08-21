@@ -27,6 +27,7 @@ var _min = 0;
 var _max = 0;
 var _numBubbles = 100;
 var _selectedEntity;
+var _articles = [];
 
 function setInsights (newInsights) {
   _insights = newInsights;
@@ -36,11 +37,16 @@ function selectEntity (entity) {
   if (_selectedEntity) {
     _selectedEntity.selected = false;
     _selectedEntity = undefined;
+    _articles = [];
   }
   if (entity) {
     _selectedEntity = _.find(_insights, { _id: entity });
     _selectedEntity.selected = true;
   }
+}
+
+function setArticles (articles) {
+  _articles = articles;
 }
 
 function setStart(newStart) {
@@ -86,6 +92,14 @@ var InsightStore = assign({}, _Store, {
 
   getNumBubbles: function () {
     return _numBubbles;
+  },
+
+  getSelectedEntity: function () {
+    return _selectedEntity;
+  },
+
+  getArticles: function () {
+    return _articles;
   }
 });
 
@@ -112,9 +126,15 @@ Dispatcher.register(function(action) {
     case Constants.ENTITY_SELECTED:
       var alreadySelected = !!_selectedEntity;
       selectEntity(action.entity);
+      // only emit a change... if things have changed
       if (alreadySelected || action.entity) {
         InsightStore.emitChange();
       }
+      break;
+
+    case Constants.ARTICLES_LOADED:
+      setArticles(action.articles);
+      InsightStore.emitChange();
       break;
 
     default:
