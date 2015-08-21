@@ -133,7 +133,6 @@ BubbleChartD3.update = function (el, state) {
     .attr('r', function(d) { return d.r; })
     .remove();
   myTexts.transition()
-    .duration(duration)
     .remove();
 
   // enter - only applies to incoming elements (once emptying data)
@@ -153,11 +152,7 @@ BubbleChartD3.update = function (el, state) {
   myGs.append('text')
     .text(d => d._id)
     .attr('dy', '0.3em')
-    .style('text-anchor', 'middle')
-    .style('opacity', 0)
-    .transition()
-    .duration(duration * 1.2)
-    .style('opacity', 1);
+    .style('text-anchor', 'middle');
 
   // exit
   myGs.exit()
@@ -177,10 +172,6 @@ BubbleChartD3.update = function (el, state) {
     .attr('r', function(d) { return 0; })
     .remove();
   myTexts.exit()
-    .transition()
-    .duration(duration)
-    .attr('dy', '0em')
-    .style('opacity', 0.0)
     .remove();
 }
 
