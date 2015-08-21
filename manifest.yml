@@ -1,6 +1,6 @@
 applications:
 - services:
-  - AlchemyAPI-2e
+  - AlchemyAPI-7h
   disk_quota: 1024M
   host: newsinsights
   name: newsinsights
