@@ -47,4 +47,16 @@ router.get('/minandmax', function (req, res) {
   })
 });
 
+/** Load article data for a given entity */
+router.get('/articles', function (req, res) {
+  var entity = req.query.entity;
+  var start = req.query.start && parseInt(req.query.start);
+  var end = req.query.end && parseInt(req.query.end);
+  entitiesDB.getArticlesForEntity(entity, start, end).then(function (articles) {
+    res.json(articles);
+  }).catch(function (e) {
+    res.json(e);
+  });
+});
+
 module.exports = router;

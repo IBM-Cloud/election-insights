@@ -86,6 +86,45 @@ var EntitiesDB = {
     });
   },
 
+  getArticlesForEntity: function (entity, start, end) {
+    return this.getArticleIdsForEntity(entity, start, end).then(function (articleIds) {
+      return new Promise(function (resolve, reject) {
+        Article.find(
+          { '_id': { $in: articleIds} },   // get all articles by id
+          null,                            // return all columns
+          { limit: 100, sort: {date: -1}}, // sort by date descending and only get 100
+          function(err, articles) {
+            if (err) {
+              console.error(err);
+              reject(err);
+            } else {
+              resolve(articles);
+            }
+          }
+        );
+      });
+    });
+  },
+
+  getArticleIdsForEntity: function (entity, start, end) {
+    return new Promise(function (resolve, reject) {
+      start = start || 0;
+      end = end || 9999999999999;
+      Entity.aggregate(
+        { $match: { text: entity, date: { $gte: new Date(start) , $lt: new Date(end) } } },
+        { $group: { _id: '$text', value: { $push: '$article_id'} } },
+        function (err, res) {
+          if (err) {
+            console.error(err);
+            reject(err);
+          } else {
+            resolve(res[0].value);
+          }
+        }
+      );
+    });
+  },
+
   getMinAndMaxDates: function () {
     return Promise.join(this._getMinDate(), this._getMaxDate(), function (min, max) {
       return ({ min: min, max: max});
