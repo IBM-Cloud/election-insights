@@ -14,8 +14,15 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-import d3      from 'd3';
-import Actions from '../Actions';
+import d3 from 'd3';
+
+var BubbleChartD3 = {};
+var svg;
+var bubble;
+var diameter;
+
+var legendRectSize = 18;
+var legendSpacing = 3;
 
 var colorRange = [
   // reds from dark to light
@@ -37,33 +44,27 @@ var colorLegend = colorRange.slice(0).reverse().map((c, i) => {
   } 
   return ret;
 });
-var legendRectSize = 18;
-var legendSpacing = 3;
 
-var BubbleChartD3 = {};
-var format = d3.format(',');
 // define a color scale for our sentiment analysis
 var color = d3.scale.quantize()
   .domain([-1, 1])
   .range(colorRange);
 
-/**
- * Prepare D3 town for proper operation
- * @param  {DOM}    el    The Dom Node container that's going to house this bubble chart
- * @param  {Object} state An object containing the data
- */
 BubbleChartD3.create = function (el, state) {
-  var svg = d3.select(el).append('svg')
+  diameter = Math.min(el.offsetWidth, el.offsetHeight);
+
+  svg = d3.select(el).append('svg')
+    .attr('width', diameter)
+    .attr('height', diameter)
     .attr('class', 'bubble-chart-d3');
 
-  svg.append('g')
-    .attr('class', 'news-bubbles');
-
-  // create a legend and center it vertically
   var legendHeight = colorLegend.length * (legendRectSize + legendSpacing) - legendSpacing;
-  var legend = svg.append('g')
-    .attr('class', 'legend')
-    .attr('transform', 'translate(80,' + (el.offsetHeight - legendHeight)/2  + ')');
+  var legend = d3.select(el).append('svg')
+    .attr('class', 'bubble-legend')
+    .style('position', 'absolute')
+    .style('height', legendHeight + 'px')
+    .style('top', (el.offsetHeight - legendHeight)/2 + 'px')
+    .style('left', 60 + 'px');
 
   // for each color in the legend, create a g and set its transform
   var legendKeys = legend.selectAll('.legend-key')
@@ -90,63 +91,99 @@ BubbleChartD3.create = function (el, state) {
     .attr('y', legendRectSize - legendSpacing)
     .text(c => c.text);
 
-  this.update(el, state);
+  bubble = d3.layout.pack()
+    .sort(null)
+    .size([diameter, diameter])
+    .padding(3);
 }
 
-/**
- * Do the actual bubble drawing
- * @param  {DOM}    el    The Dom Node container that's going to house this bubble chart
- * @param  {Object} state An object containing the data
- *   must contain an array called `data` that houses objects that look like:
- *   {
- *     _id: String,
- *     value: number,
- *     sentiment: number
- *   }
- */
 BubbleChartD3.update = function (el, state) {
-  var data = state.data;
-  // reference to our <g> container
-  var g = d3.select(el).selectAll('.news-bubbles');
-  // remove all existing bubbles
-  g.selectAll('.bubble-container').remove();
-  // create our bubble layout
-  var bubble = d3.layout.pack()
-    .sort(null)
-    .size([el.offsetWidth, el.offsetHeight])
-    .padding(1.5);
-  // calculate the size and positioning of each bubble
-  var node = g.selectAll('.news-bubble')
-    .data(bubble.nodes({children: data})
-      .filter(d => !d.children && d.r)
-    );
-  // create our bubble containers
-  node.enter()
-    .append('g')
+  if (!state.data || !state.data.length) return;
+  // generate data with calculated layout values
+  var nodes = bubble.nodes({children: state.data})
+    .filter(function(d) { return !d.children; }); // filter out the outer bubble
+
+  // assign new data to existing DOM 
+  var myGs = svg.selectAll('.bubble-container')
+    .data(nodes, function(d) { return 'g' + d._id; });
+  var myCircles = svg.selectAll('circle')
+    .data(nodes, function(d) { return 'c' + d._id; });
+  var myTexts = svg.selectAll('text')
+    .data(nodes, function(d) { return 't' + d._id; });
+
+  // enter data -> remove, so non-exist selections for upcoming data won't stay -> enter new data -> ...
+
+  // To chain transitions, 
+  // create the transition on the updating elements before the entering elements 
+  // because enter.append merges entering elements into the update selection
+
+  var duration = 500;
+  var delay = 0;
+
+  // update - this is created before enter.append. it only applies to updating nodes.
+  myGs.transition()
+    .duration(duration)
+    .delay(function(d, i) {delay = i * 7; return delay;})
+    .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
+    .style('opacity', 1); // force to 1, so they don't get stuck below 1 at enter()
+  myCircles.transition()
+    .duration(duration)
+    .delay(function(d, i) {delay = i * 7; return delay;})
+    .style('fill', d => color(d.sentiment))
+    .attr('r', function(d) { return d.r; })
+    .remove();
+  myTexts.transition()
+    .duration(duration)
+    .remove();
+
+  // enter - only applies to incoming elements (once emptying data)
+  myGs.enter().append('g')
     .attr('class', 'bubble-container')
-    .attr('transform', d => ('translate(' + d.x + ',' + d.y + ')'));
-  // add a title to each bubble
-  node.append('title')
-    .text(d => d._id + ': ' + format(d.value));
-  // create the actual circle
-  node.append('circle')
-    .attr('r', d => d.r )
-    .style('fill', d => color(d.sentiment));
-  // if you like it then you should've put a label on it
-  node.append('text')
-    .attr('dy', '.3em')
+    .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
+    .transition()
+    .duration(duration * 1.2)
+    .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
+    .style('opacity', 1);   
+  myGs.append('circle')
+    .style('fill', d => color(d.sentiment))
+    .attr('r', function(d) { return 0; })
+    .transition()
+    .duration(duration * 1.2)
+    .attr('r', function(d) { return d.r; });
+  myGs.append('text')
+    .text(d => d._id)
+    .attr('dy', '0.3em')
     .style('text-anchor', 'middle')
-    .text(d => d._id);
-  // i dont really know what this does!
-  node.exit()
+    .style('opacity', 0)
+    .transition()
+    .duration(duration * 1.2)
+    .style('opacity', 1);
+
+  // exit
+  myGs.exit()
+    .transition()
+    .duration(duration)
+    .attr('transform', function(d) { 
+      var dy = d.y - diameter/2;
+      var dx = d.x - diameter/2;
+      var theta = Math.atan2(dy,dx);
+      var destX = diameter * (1 + Math.cos(theta) )/ 2;
+      var destY = diameter * (1 + Math.sin(theta) )/ 2; 
+      return 'translate(' + destX + ',' + destY + ')'; })
+    .remove();
+  myCircles.exit()
+    .transition()
+    .duration(duration)
+    .attr('r', function(d) { return 0; })
+    .remove();
+  myTexts.exit()
+    .transition()
+    .duration(duration)
+    .attr('dy', '0em')
+    .style('opacity', 0.0)
     .remove();
 }
 
-/**
- * Any clean up would go here for now there is nothing to do
- * @param  {[type]} el [description]
- * @return {[type]}    [description]
- */
 BubbleChartD3.destroy = function (el) {}
 
 module.exports = BubbleChartD3;

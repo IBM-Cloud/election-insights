@@ -50,7 +50,7 @@ var Actions = {
   initialize: function () {
     requester.fetchMinAndMax().then(minAndMax => {
       Dispatcher.dispatch({ actionType: Constants.MIN_AND_MAX, min: minAndMax.min, max: minAndMax.max });
-      this.getInsights(moment(minAndMax.max).subtract(5, 'hours').unix()*1000, minAndMax.max);
+      this.getInsights(moment(minAndMax.max).subtract(1, 'day').unix()*1000, minAndMax.max);
     });
   },
 
