@@ -34,6 +34,7 @@ class NewsInsights extends React.Component {
           value={this.props.numBubbles}
           steps="500"
           onChange={this.onChange.bind(this)} />
+        <div className="help-text">(might need to adjust for screen size or if animations are laggy)</div>
       </div>
     );
   }

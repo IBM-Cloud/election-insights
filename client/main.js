@@ -37,8 +37,8 @@ class NewsInsights extends React.Component {
           max={this.state.max}
           start={this.state.start}
           end={this.state.end} />
-        <BubbleSlider numBubbles={this.state.numBubbles} />
         <BubbleChart data={this.state.insights} />
+        <BubbleSlider numBubbles={this.state.numBubbles} />
       </div>
     );
   }
