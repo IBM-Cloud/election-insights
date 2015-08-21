@@ -27,14 +27,14 @@ var returnInfo = [
 ];
 
 var newsScraper = {
-  getEntities: function () {
+  getEntities: function (start, end) {
     return new Promise(function (resolve, reject) {
-      var start = 'now-1d';
-      var end = 'now';
+      start = start || 'now-1d';
+      end = end || 'now';
       alchemy.news({
         start: start,
         end: end,
-        maxResults: 400,
+        maxResults: 1000,
         'q.enriched.url.enrichedTitle.taxonomy.taxonomy_': '|label=elections,score=>0.75|',
         return: returnInfo.join(',')
       }, function (response) {

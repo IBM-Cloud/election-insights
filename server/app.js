@@ -37,14 +37,28 @@ app.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-
-function getAndParseArticles () {
-  entitiesDB.init().then(function () {
-    return newsScraper.getEntities();
+var _intervalID;
+var failureCount = 0;
+function getAndParseMostRecentArticles () {
+  entitiesDB.getMinAndMaxDates().then(function (minAndMax) {
+    return newsScraper.getEntities(minAndMax.max/1000);
   }).then(function (entities) {
     return entitiesDB.uploadArticlesFromDocs(entities);
+  }).catch(function (e) {
+    console.log('article scraping failed');
+    console.error(e);
+    if (++failureCount > 5) {
+      clearInterval(_intervalID);
+    }
   });
 }
 
+function parseForever () {
+  // get them now
+  getAndParseMostRecentArticles();
+  // get more ever 15m
+  _intervalID = setInterval(getAndParseMostRecentArticles, 15*60*1000);
+}
+
 // getAndParseArticles();
-entitiesDB.init();
+entitiesDB.init().then(parseForever);
