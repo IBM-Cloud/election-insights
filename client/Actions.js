@@ -62,6 +62,14 @@ var Actions = {
       this.getInsights(null, null, newBubbles);
       _timeoutHandle = undefined;
     }.bind(this), 150);
+  },
+
+  loadArticlesForEntity: function (entity) {
+    entity = typeof entity === 'string' ? entity : entity._id;
+    Dispatcher.dispatch({ actionType: Constants.ENTITY_SELECTED, entity: entity});
+    requester.fetchArticlesForEntity(entity, _lastStart, _lastEnd).then(articles => {
+      Dispatcher.dispatch({ actionType: Constants.ARTICLES_LOADED, articles: articles, entity: entity });
+    })
   }
 }
 

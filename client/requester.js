@@ -48,6 +48,23 @@ var requester = {
         }
       })
     })
+  },
+
+  /**
+   * Load all articles for a given entity in a given time range
+   */
+  fetchArticlesForEntity: function (entity, start, end) {
+    return new Promise(function (resolve, reject) {
+      request.get('/articles')
+        .query({entity: entity, start: start, end: end})
+        .end(function (err, res) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(res.body);
+          }
+        })
+    })
   }
 }
 

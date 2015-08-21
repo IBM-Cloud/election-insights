@@ -14,7 +14,8 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-import d3 from 'd3';
+import d3      from 'd3';
+import Actions from '../Actions';
 
 var BubbleChartD3 = {};
 var svg;
@@ -139,6 +140,7 @@ BubbleChartD3.update = function (el, state) {
   myGs.enter().append('g')
     .attr('class', 'bubble-container')
     .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
+    .on('click', Actions.loadArticlesForEntity)
     .transition()
     .duration(duration * 1.2)
     .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
