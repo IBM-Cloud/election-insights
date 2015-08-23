@@ -21,6 +21,7 @@ import BubbleChart   from './components/BubbleChart';
 import RangePicker   from './components/RangePicker';
 import BubbleSlider  from './components/BubbleSlider';
 import ArticleList   from './components/ArticleList';
+import Header        from './components/Header';
 import InsightsStore from './stores/InsightsStore';
 
 class NewsInsights extends React.Component {
@@ -33,7 +34,7 @@ class NewsInsights extends React.Component {
   render () {
     return (
       <div className="news-insights" onClick={Actions.deselectEntity}>
-        <h1 className="election-insights-title">Election Insights</h1>
+        <Header />
         <RangePicker
           min={this.state.min}
           max={this.state.max}

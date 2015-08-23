@@ -18,10 +18,16 @@ var express = require('express');
 var router = express.Router();
 var alchemy = require('./alchemy');
 var entitiesDB = require('./entitiesDB');
+var path = require('path');
 
 /* GET home page. */
 router.get('/', function (req, res) {
   res.render('index');
+});
+
+/* Get terms of service */
+router.get('/tos', function (req, res) {
+  res.sendfile(path.resolve(__dirname, '../public/tos.html'));
 });
 
 /**

@@ -53,14 +53,28 @@ a {
   display: flex;
   flex-direction: column;
 
-  .election-insights-title{
-    height: 80px;
-    color: #fff;
-    background-color: @accent-color;
-    text-indent: 30px;
+  .header {
     display: flex;
+    height: 80px;
     align-items: center;
+    padding: 0px 30px;
+    background-color: @accent-color;
+
+    .election-insights-title{
+      color: #fff;
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+
+    a {
+      margin-left: 20px;
+      &:hover, &:active {
+        color: #fff;
+      }
+    }
   }
+
 
   .bubble-chart-container {
     flex: 1;
