@@ -211,12 +211,27 @@ var EntitiesDB = {
           count: e.count,
           sentiment: e.sentiment.score
         }
+      }).filter(function (e) {
+        return e.text.length > 1;
       });
-      return {
-        article: article,
-        entities: entities
-      };
+      if (entities.length) {
+        return {
+          article: article,
+          entities: entities
+        };
+      }
     }
+  },
+
+  /**
+   * Remove all entities with a text length of 1
+   */
+  pruneCharEntities: function () {
+    Entity.remove({$where:"this.text.length == 1"}, function (e) {
+      if (e) {
+        console.error(e);
+      }
+    })
   }
 }
 

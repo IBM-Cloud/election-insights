@@ -60,5 +60,4 @@ function parseForever () {
   _intervalID = setInterval(getAndParseMostRecentArticles, 15*60*1000);
 }
 
-// getAndParseArticles();
 entitiesDB.init().then(parseForever);
