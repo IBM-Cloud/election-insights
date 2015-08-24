@@ -26,6 +26,12 @@ var returnInfo = [
   'enriched.url.entities.entity.text'
 ];
 
+/**
+ * Our news scraper.
+ * Currently only has one method - `getEntities` which handles querying AlchemyAPI.
+ * The query is focused around election articles with a confidence >= 0.75. We resolve
+ * with entity sentiment, count, and text as well as the articles title and URL.
+ */
 var newsScraper = {
   getEntities: function (start, end) {
     return new Promise(function (resolve, reject) {

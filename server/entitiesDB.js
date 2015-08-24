@@ -19,7 +19,7 @@ var mongoose = require('mongoose');
 var String = mongoose.Schema.Types.String;
 var Number = mongoose.Schema.Types.Number;
 
-// define schemas and models
+// define schemas and models for articles
 var articleSchema = new mongoose.Schema({
   _id: String,
   title: String,
@@ -28,6 +28,7 @@ var articleSchema = new mongoose.Schema({
 });
 var Article = mongoose.model('Article', articleSchema);
 
+// define schemas and models for entities
 var entitySchema = new mongoose.Schema({
   _id: String,
   text: String,
@@ -64,6 +65,11 @@ var EntitiesDB = {
     });
   },
 
+  /**
+   * Resolves with an array of entities grouped by their text. Can
+   * specify a timeframe for the grouping, and can also specify the
+   * number of entities to return.
+   */
   aggregateEntities: function (start, end, limit) {
     return new Promise(function (resolve, reject) {
       start = start || 0;
@@ -86,13 +92,17 @@ var EntitiesDB = {
     });
   },
 
+  /**
+   * Given an entities text and a timeframe, resolve with the articles
+   * that mention that entity.
+   */
   getArticlesForEntity: function (entity, start, end) {
     return this.getArticleIdsForEntity(entity, start, end).then(function (articleIds) {
       return new Promise(function (resolve, reject) {
         Article.find(
-          { '_id': { $in: articleIds} },   // get all articles by id
-          null,                            // return all columns
-          { limit: 100, sort: {date: -1}}, // sort by date descending and only get 100
+          { '_id': { $in: articleIds} }, // get all articles by id
+          null,                          // return all columns
+          { sort: {date: -1}},           // sort by date descending and only get 100
           function(err, articles) {
             if (err) {
               console.error(err);
@@ -106,6 +116,10 @@ var EntitiesDB = {
     });
   },
 
+  /**
+   * Given an entities text and a timeframe, resolve with the article
+   * ids that contain that entity.
+   */
   getArticleIdsForEntity: function (entity, start, end) {
     return new Promise(function (resolve, reject) {
       start = start || 0;
@@ -125,12 +139,18 @@ var EntitiesDB = {
     });
   },
 
+  /**
+   * Resolve with an object that contains the min and max dates in the Articles DB.
+   */
   getMinAndMaxDates: function () {
     return Promise.join(this._getMinDate(), this._getMaxDate(), function (min, max) {
       return ({ min: min, max: max});
     });
   },
 
+  /**
+   * Resolve with the min date in the Articles DB.
+   */
   _getMinDate: function () {
     return new Promise(function (resolve, reject) {
       Article.find({}, 'date', {limit: 1, sort: {date: 1}}, function (e, docs) {
@@ -143,6 +163,9 @@ var EntitiesDB = {
     });
   },
 
+  /**
+   * Resolve with the max date in the Articles DB.
+   */
   _getMaxDate: function () {
     return new Promise(function (resolve, reject) {
       Article.find({}, 'date', {limit: 1, sort: {date: -1}}, function (e, docs) {
