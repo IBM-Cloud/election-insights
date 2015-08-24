@@ -1,21 +1,22 @@
-# News Insights
+# Election Insights
 
 Currently hosted [here](http://newsinsights.mybluemix.net/)
 
-Uses Alchemy API.
+The Election Insights app uses Alchemy News API to display a bubble map of
+what's being talked about in real time and how people feel about them. The app
+uses Alchemy's taxonmy breakdown to focus specifically on the election, and uses
+Alchemy's entity breakdown and sentiment analaysis to display the data visually.
 
-Note: Loading `alchemyapi_node` as a git submodule from
-https://github.com/kauffecup/alchemyapi_node. This means that once you clone
-this repo down, you'll need to run:
+The size of the bubbles are dictated by how much they're being discussed and the
+color is dictated by the average sentiment around that entity.
 
-    git submodule init
-    git submodule update
+![screenshot](http://i.imgur.com/D1uinel.png)
 
 # Configuration
 
-If running on Bluemix, make sure you bind Alchemy with your API key. If running
-locally, make `server/config.json` that is the same structure as `VCAP_SERVICES`
-is on Bluemix. For example:
+In Bluemix you will need to bind mongolabs and bind Alchemy with your API key.
+If running locally, make `server/config.json` that is the same structure as
+`VCAP_SERVICES` is on Bluemix. For example:
 
 ```json
 {
@@ -28,8 +29,27 @@ is on Bluemix. For example:
          }
       }
    ]
+   ...
 }
 ```
+
+# Running the app locally
+
+Note: Loading `alchemyapi_node` as a git submodule from
+https://github.com/kauffecup/alchemyapi_node. This means that once you clone
+this repo down, you'll need to run:
+
+    git submodule init
+    git submodule update
+
+Then all you need to do is
+
+    npm install
+    npm start
+
+There's also a helper `npm dev` that kicks off the server and runs `gulp dev`
+which handles watchify and re-compiling less->css when files change.
+
 
 # License
 
