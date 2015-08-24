@@ -17,6 +17,7 @@
 import React      from 'react';
 import classnames from 'classnames';
 import moment     from 'moment';
+import Actions    from '../Actions';
 
 class Article extends React.Component {
   render () {
@@ -38,6 +39,7 @@ class ArticleList extends React.Component {
     });
     return (
       <div className={classes} onClick={e => e.stopPropagation()}>
+        <button className="back" onClick={Actions.deselectEntity}>x</button>
         <h2>{this.props.selectedEntity && (this.props.selectedEntity._id || this.props.selectedEntity)}</h2>
         <ul className="the-articles">
           {articles}

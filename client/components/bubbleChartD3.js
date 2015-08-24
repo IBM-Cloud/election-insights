@@ -59,6 +59,8 @@ BubbleChartD3.create = function (el, state) {
   svg = d3.select(el).append('svg')
     .attr('width', diameter)
     .attr('height', diameter)
+    .style('position', 'relative')
+    .style('top', (el.offsetHeight-diameter)/2 + 'px') // center vertically
     .attr('class', 'bubble-chart-d3');
 
   var legendHeight = colorLegend.length * (legendRectSize + legendSpacing) - legendSpacing;

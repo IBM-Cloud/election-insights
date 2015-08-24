@@ -47,15 +47,21 @@ class NewsInsights extends React.Component {
 
   /** Configure the state and event handlers for proper mouse dragginess */
   _onMouseDown (dragEntry, e) {
-    this._curX = e.clientX;
-    document.addEventListener('mousemove', this.onMouseMove);
-    document.addEventListener('mouseup', this.onMouseUp);
+    var isTouch = !!e.touches;
+    this._curX = isTouch ? e.touches[0].clientX : e.clientX;
+    if (isTouch) {
+      document.addEventListener('touchmove', this.onMouseMove);
+      document.addEventListener('touchend', this.onMouseUp);
+    } else {
+      document.addEventListener('mousemove', this.onMouseMove);
+      document.addEventListener('mouseup', this.onMouseUp);
+    }
     this.setState({dragging: true, dragEntry: dragEntry});
   }
 
   /** When the mouse moves, adjust x and w depending on what is being dragged */
   _onMouseMove (e) {
-    var clientX = e.clientX;
+    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
     var dx = clientX - this._curX;
     this._curX = clientX;
 
@@ -128,12 +134,14 @@ class NewsInsights extends React.Component {
           <div className="range-background"></div>
           <div className="range-slider"
             onMouseDown={this.onSliderMouseDown}
+            onTouchStart={this.onSliderMouseDown}
             style={{
               left: this.state.pos.x,
               width: this.state.pos.w
             }}>{moment.duration(start - end).humanize()}</div>
           <div className="handle left"
             onMouseDown={this.onHandleLeftMouseDown}
+            onTouchStart={this.onHandleLeftMouseDown}
             style={{
               left: this.state.pos.x
             }} />
@@ -142,6 +150,7 @@ class NewsInsights extends React.Component {
           </div>
           <div className="handle right"
             onMouseDown={this.onHandleRightMouseDown}
+            onTouchStart={this.onHandleRightMouseDown}
             style={{
               left: this.state.pos.x + this.state.pos.w
             }} />

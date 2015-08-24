@@ -72,4 +72,5 @@ class NewsInsights extends React.Component {
   }
 };
 
+React.initializeTouchEvents(true);
 React.render(<NewsInsights />, document.body);
