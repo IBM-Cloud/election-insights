@@ -30,9 +30,9 @@ class BubbleSlider extends React.Component {
           className="slider"
           type="range"
           min="1"
-          max="500"
+          max="250"
           value={this.props.numBubbles}
-          steps="500"
+          steps="250"
           onChange={this.onChange.bind(this)} />
         <div className="help-text">(might need to adjust for screen size or if animations are laggy)</div>
       </div>

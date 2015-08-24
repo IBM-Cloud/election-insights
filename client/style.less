@@ -164,8 +164,8 @@ a {
 
     .back {
       position: absolute;
-      top: 5px;
-      left: 5px;
+      top: 24px;
+      left: 12px;
     }
 
     h2 {
@@ -177,6 +177,7 @@ a {
       flex: 1;
       overflow: auto;
       -webkit-overflow-scrolling: touch;
+      padding: 0px 40px;
 
       .article {
         margin-bottom: 10px;
@@ -188,16 +189,19 @@ a {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    padding-bottom: 25px;
+    padding: 0 25px 25px;
     user-select: none;
     align-items: center;
 
     .num-bubble-label {
       margin-right: 10px;
+      width: 85px;
+      text-align: right;
     }
 
     .slider {
       max-width: 400px;
+      flex: 1;
     }
 
     .help-text {
@@ -216,7 +220,7 @@ a {
         font-size: 1.2em;
       }
       a {
-        font-size: 0.8em;
+        font-size: 0.7em;
       }
     }
     .range-picker-container {
@@ -224,6 +228,10 @@ a {
     }
     .bubble-chart-container {
       .bubble-legend {display: none;}
+    }
+    .bubble-selector {
+      .num-bubble-label {font-size: 0.8em;}
+      .help-text {font-size: 0.6em;}
     }
     .article-list {
       position: fixed;
