@@ -1,6 +1,6 @@
 # Election Insights
 
-Currently hosted [here](http://newsinsights.mybluemix.net/)
+Currently hosted [here](http://electioninsights.mybluemix.net/)
 
 The Election Insights app uses Alchemy News API to display a bubble map of
 what's being talked about in real time and how people feel about them. The app
