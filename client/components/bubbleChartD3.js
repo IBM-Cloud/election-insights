@@ -195,7 +195,21 @@ BubbleChartD3.update = function (el, state) {
   labels.exit()
     .transition()
     .duration(duration)
+    .style('top', function(d) { 
+      var dy = d.y - diameter/2;
+      var dx = d.x - diameter/2;
+      var theta = Math.atan2(dy,dx);
+      var destY = diameter * (1 + Math.sin(theta) )/ 2; 
+      return destY + 'px'; })
+    .style('left', function(d) { 
+      var dy = d.y - diameter/2;
+      var dx = d.x - diameter/2;
+      var theta = Math.atan2(dy,dx);
+      var destX = diameter * (1 + Math.cos(theta) )/ 2;
+      return destX + 'px'; })
     .style('opacity', 0)
+    .style('width', 0)
+    .style('height', 0)
     .remove();
 }
 
