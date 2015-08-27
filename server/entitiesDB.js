@@ -77,7 +77,7 @@ var EntitiesDB = {
       limit = limit || 100;
       Entity.aggregate(
         { $match: { date: { $gte: new Date(start) , $lt: new Date(end) } } },
-        { $group: { _id: '$text', value: { $sum: '$count'}, sentiment: { $avg: '$sentiment'} } },
+        { $group: { _id: {'$toLower' : '$text'}, value: { $sum: '$count'}, sentiment: { $avg: '$sentiment'} } },
         { $sort: { value: -1} },
         { $limit: limit },
         function (err, res) {
@@ -223,7 +223,7 @@ var EntitiesDB = {
         _id: doc.id,
         title: enrichedUrl.title,
         date: new Date(doc.timestamp * 1000),
-        url: enrichedUrl.url,
+        url: enrichedUrl.url
       }
       entities = enrichedUrl.entities.map(function (e) {
         return {

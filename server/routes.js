@@ -38,7 +38,16 @@ router.get('/newsinsights', function (req, res) {
   var end = req.query.end && parseInt(req.query.end);
   var limit = req.query.limit && parseInt(req.query.limit);
   entitiesDB.aggregateEntities(start, end, limit).then(function (results) {
-    res.json(results);
+    res.json(results.map(function (r) {
+      var capitalizedID = r._id.replace(/\w*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      });
+      return {
+        _id: capitalizedID,
+        sentiment: r.sentiment,
+        value: r.value
+      }
+    }));
   }).catch(function (e) {
     res.json(e);
   });
