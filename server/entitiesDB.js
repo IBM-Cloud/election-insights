@@ -125,7 +125,7 @@ var EntitiesDB = {
       start = start || 0;
       end = end || 9999999999999;
       Entity.aggregate(
-        { $match: { text: entity, date: { $gte: new Date(start) , $lt: new Date(end) } } },
+        { $match: { text: new RegExp('^' + entity + '$', 'i'), date: { $gte: new Date(start) , $lt: new Date(end) } } },
         { $group: { _id: '$text', value: { $push: '$article_id'} } },
         function (err, res) {
           if (err) {
