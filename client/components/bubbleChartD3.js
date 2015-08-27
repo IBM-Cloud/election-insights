@@ -19,6 +19,7 @@ import Actions from '../Actions';
 
 var BubbleChartD3 = {};
 var svg;
+var html;
 var bubble;
 var diameter;
 
@@ -62,6 +63,14 @@ BubbleChartD3.create = function (el, state) {
     .style('position', 'relative')
     .style('top', (el.offsetHeight-diameter)/2 + 'px') // center vertically
     .attr('class', 'bubble-chart-d3');
+
+  html = d3.select(el).append('div')
+    .style('width', diameter + 'px')
+    .style('height', diameter + 'px')
+    .style('position', 'absolute')
+    .style('top', (el.offsetHeight-diameter)/2 + 'px') // center vertically
+    .style('left', (el.offsetWidth-diameter)/2 + 'px') // center horizontally
+    .attr('class', 'bubble-chart-text');
 
   var legendHeight = colorLegend.length * (legendRectSize + legendSpacing) - legendSpacing;
   var legend = d3.select(el).append('svg')
@@ -110,12 +119,11 @@ BubbleChartD3.update = function (el, state) {
     .filter(function(d) { return !d.children; }); // filter out the outer bubble
 
   // assign new data to existing DOM 
-  var myGs = svg.selectAll('.bubble-container')
+  var circles = svg.selectAll('circle')
     .data(nodes, function(d) { return 'g' + d._id; });
-  var myCircles = svg.selectAll('circle')
-    .data(nodes, function(d) { return 'c' + d._id; });
-  var myTexts = svg.selectAll('text')
-    .data(nodes, function(d) { return 't' + d._id; });
+
+  var labels = html.selectAll('.bubble-label')
+    .data(nodes, function(d) { return 'g' + d._id; });
 
   // enter data -> remove, so non-exist selections for upcoming data won't stay -> enter new data -> ...
 
@@ -127,43 +135,51 @@ BubbleChartD3.update = function (el, state) {
   var delay = 0;
 
   // update - this is created before enter.append. it only applies to updating nodes.
-  myGs.transition()
+  circles.transition()
     .duration(duration)
     .delay(function(d, i) {delay = i * 7; return delay;})
     .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
-    .style('opacity', 1); // force to 1, so they don't get stuck below 1 at enter()
-  myCircles.transition()
+    .attr('r', function(d) { return d.r; })
+    .style('opacity', 1)
+    .style('fill', d => d.selected ? selectedColor : color(d.sentiment));
+
+  labels.transition()
     .duration(duration)
     .delay(function(d, i) {delay = i * 7; return delay;})
-    .style('fill', d => d.selected ? selectedColor : color(d.sentiment))
-    .attr('r', function(d) { return d.r; })
-    .remove();
-  myTexts.transition()
-    .remove();
+    .style('height', d => 2 * d.r + 'px')
+    .style('width', d => 2 * d.r + 'px')
+    .style('left', d =>  d.x - d.r + 'px')
+    .style('top', d =>  d.y - d.r + 'px')
+    .style('opacity', 1);
 
   // enter - only applies to incoming elements (once emptying data)
-  myGs.enter().append('g')
-    .attr('class', 'bubble-container')
+  circles.enter().append('circle')
     .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
-    .on('click', (d,i) => {d3.event.stopPropagation(); Actions.loadArticlesForEntity(d);})
-    .transition()
-    .duration(duration * 1.2)
-    .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
-    .style('opacity', 1);   
-  myGs.append('circle')
-    .style('fill', d => d.selected ? selectedColor : color(d.sentiment))
     .attr('r', function(d) { return 0; })
+    .attr('class', 'bubble')
+    .style('fill', d => d.selected ? selectedColor : color(d.sentiment))
     .transition()
     .duration(duration * 1.2)
-    .attr('r', function(d) { return d.r; });
-  myGs.append('text')
+    .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
+    .attr('r', function(d) { return d.r; })
+    .style('opacity', 1);
+
+   labels.enter().append('div')
+    .attr('class', 'bubble-label')
     .text(d => d._id)
-    .style('fill', d => d.selected ? selectedTextColor : '#000')
-    .attr('dy', '0.3em')
-    .style('text-anchor', 'middle');
+    .on('click', (d,i) => {d3.event.stopPropagation(); Actions.loadArticlesForEntity(d);})
+    .style('position', 'absolute')
+    .style('height', d => 2 * d.r + 'px')
+    .style('width', d => 2 * d.r + 'px')
+    .style('left', d =>  d.x - d.r + 'px')
+    .style('top', d =>  d.y - d.r + 'px')
+    .style('opacity', 0)
+    .transition()
+    .duration(duration * 1.2)
+    .style('opacity', 1);
 
   // exit
-  myGs.exit()
+  circles.exit()
     .transition()
     .duration(duration)
     .attr('transform', function(d) { 
@@ -173,13 +189,13 @@ BubbleChartD3.update = function (el, state) {
       var destX = diameter * (1 + Math.cos(theta) )/ 2;
       var destY = diameter * (1 + Math.sin(theta) )/ 2; 
       return 'translate(' + destX + ',' + destY + ')'; })
-    .remove();
-  myCircles.exit()
-    .transition()
-    .duration(duration)
     .attr('r', function(d) { return 0; })
     .remove();
-  myTexts.exit()
+
+  labels.exit()
+    .transition()
+    .duration(duration)
+    .style('opacity', 0)
     .remove();
 }
 

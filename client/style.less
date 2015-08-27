@@ -85,6 +85,22 @@ a {
     display: flex;
     user-select: none;
     justify-content: center;
+
+    .bubble-chart-text {
+      .bubble-label {
+        text-align: center;
+        overflow: hidden;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        border-radius: 50%;
+        &:hover {
+          overflow: visible;
+          font-weight: bold;
+        }
+      }
+    }
   }
 
   .range-picker-container {
