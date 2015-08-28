@@ -22,7 +22,6 @@ class Header extends React.Component {
       <div className="header">
         <h1 className="election-insights-title">Election Insights</h1>
         <a href="http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/">Built with IBM Watson</a>
-        <a href="https://github.com/kauffecup/news-insights">Fork me on GitHub</a>
         <a href="/tos">Terms of Service</a>
         <a href="http://www.ibm.com/privacy/us/en/">Privacy Policy</a>
       </div>
