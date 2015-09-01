@@ -58,6 +58,12 @@ function parseForever () {
   getAndParseMostRecentArticles();
   // get more ever 15m
   _intervalID = setInterval(getAndParseMostRecentArticles, 15*60*1000);
+  // in 24h, reset the failure count and interval
+  setTimeout(function () {
+    failureCount = 0;
+    _intervalID && clearInterval(_intervalID);
+    parseForever();
+  }, 24*60*60*1000);
 }
 
 entitiesDB.init().then(parseForever);
