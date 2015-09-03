@@ -39,7 +39,7 @@ class ArticleList extends React.Component {
     });
     return (
       <div className={classes} onClick={e => e.stopPropagation()}>
-        <button className="back" onClick={Actions.deselectEntity}>x</button>
+        <button className="back" onClick={Actions.deselectEntity.bind(Actions)}>x</button>
         <h2>{this.props.selectedEntity && (this.props.selectedEntity._id || this.props.selectedEntity)}</h2>
         <ul className="the-articles">
           {articles}
