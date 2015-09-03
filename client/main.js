@@ -33,7 +33,7 @@ class NewsInsights extends React.Component {
 
   render () {
     return (
-      <div className="news-insights" onClick={Actions.deselectEntity}>
+      <div className="news-insights" onClick={Actions.deselectEntity.bind(Actions)}>
         <Header />
         <RangePicker
           min={this.state.min}
