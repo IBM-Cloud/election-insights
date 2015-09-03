@@ -81,14 +81,14 @@ var Actions = {
 
   neutralPageView: function () {
     window.location.assign("/#/");
-    if (!!ga) {
+    if (typeof ga !== 'undefined') {
       ga('send', 'pageview');
     }
   },
 
   entityPageView: function (entity) {
     window.location.assign("/#/entity/" + entity);
-    if (!!ga) {
+    if (typeof ga !== 'undefined') {
       ga('send', 'pageview', '/entity/' + entity);
     }
   }
