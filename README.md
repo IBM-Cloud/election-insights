@@ -12,15 +12,41 @@ color is dictated by the average sentiment around that entity.
 
 ![screenshot](http://i.imgur.com/SqKHnBC.png)
 
-# Configuration
+# Deploy to Bluemix
 
-In Bluemix you will need to create a Node.js runtime, bind a Mongolabs
-service instance and bind Alchemy with your API key. Once this is set up you'll
-be able to
+prerequisite: create a [Bluemix](https://bluemix.net/), and register for an
+[Alchemy API Key](http://www.alchemyapi.com/api/register.html).
+
+There are two ways to deploy this to Bluemix:
+
+### Option 1: Click the button below:
+
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy)
+
+This will set up a build pipeline - every time you push to the jazzhub repo this
+will create, it will automatically trigger a build and deploy.
+
+After the initial deploy is done, you'll need to go to your dashboard, go to the
+space that you choose for this application, go to the application itself,
+
+### Option 2: The manual route:
+
+In Bluemix:
+
+  1. Create a Node.js runtime
+  1. Bind a Mongolabs service instance with the "sandbox" plan
+  1. Bind Alchemy with your API key
+
+Once this is set up add these to your manifest.yml:
+
+```yml
+host: newsinsights
+name: newsinsights
+```
+
+Then:
 
 ```sh
-git submodule init
-git submodule update
 npm install
 npm run build
 cf push "electioninsights"
@@ -28,8 +54,30 @@ cf push "electioninsights"
 
 (or whatever you named your app), and you'll be all set.
 
-If running locally, make `server/config.json` that is the same structure as
-`VCAP_SERVICES` is on Bluemix. For example:
+# Running the app locally
+
+Note: Loading `alchemyapi_node` as a git submodule from
+https://github.com/kauffecup/alchemyapi_node. There is a `initsubmodules` script
+that runs:
+
+```sh
+git submodule init
+git submodule update
+```
+
+This means all you need to do is:
+
+```sh
+npm run initsubmodules
+npm install
+npm start
+```
+
+There's also a helper `npm dev` that kicks off the server and runs `gulp dev`
+which handles watchify and re-compiling less->css when files change.
+
+Make `server/config.json` that is the same structure as `VCAP_SERVICES` is on
+Bluemix. For example:
 
 ```json
 {
@@ -51,24 +99,10 @@ If running locally, make `server/config.json` that is the same structure as
 }
 ```
 
-# Running the app locally
-
-Note: Loading `alchemyapi_node` as a git submodule from
-https://github.com/kauffecup/alchemyapi_node. This means that once you clone
-this repo down, you'll need to run:
-
-    git submodule init
-    git submodule update
-
-Then all you need to do is
-
-    npm install
-    npm start
-
-There's also a helper `npm dev` that kicks off the server and runs `gulp dev`
-which handles watchify and re-compiling less->css when files change.
-
 # Using IBM DevOps
+
+*Note: if you used the "Deploy to Bluemix" button, this will all be set up for*
+*you.*
 
 I like to use IBM DevOps to automatically build and deploy my code whenever I
 push to git. Your build stage should look like:
@@ -90,6 +124,9 @@ cf push "${CF_APP}"
 # view logs
 #cf logs "${CF_APP}" --recent
 ```
+# Contributing
+
+Feel free to fork this repo and open a Pull Request or open an issue!
 
 # License
 

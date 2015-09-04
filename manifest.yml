@@ -1,11 +1,19 @@
+---
+declared-services:
+  AlchemyAPI-7h:
+    label: AlchemyAPI
+    plan: user-provided
+  MongoLab-Election:
+    label: mongolab
+    plan: sandbox
 applications:
-- services:
-  - AlchemyAPI-7h
-  disk_quota: 1024M
-  host: newsinsights
-  name: newsinsights
-  command: node server/app.js
+- disk_quota: 1024M
+  random-route: true
+  buildpack: sdk-for-nodejs
+  command: npm run start
   path: .
-  domain: mybluemix.net
   instances: 1
   memory: 256M
+  services:
+  - AlchemyAPI-7h
+  - MongoLab-Election

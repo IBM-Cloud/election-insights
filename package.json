@@ -3,9 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "initsubmodules": "git submodule init; git submodule update",
     "start": "node server/app.js",
     "build": "gulp build",
     "dev": "node server/app.js; gulp dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBM-Bluemix/election-insights.git"
   },
   "dependencies": {
     "bluebird": "^2.9.34",
