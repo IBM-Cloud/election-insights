@@ -15,7 +15,8 @@
 //------------------------------------------------------------------------------
 
 var fs = require('fs');
-var AlchemyAPI = require('./alchemyapi_node/alchemyapi');
+var AlchemyAPI = require('alchemyapi_node');
+var path = require('path');
 var alchemyapi;
 
 /**
@@ -52,7 +53,7 @@ if (userProvided) {
  * If we have an apiKey, write it to api_key.txt and instantiate a new AlchemyAPI
  */
 if (apiKey) {
-  fs.writeFileSync(__dirname + '/alchemyapi_node/api_key.txt', apiKey);
+  fs.writeFileSync(path.resolve(__dirname, '../node_modules/alchemyapi_node/api_key.txt'), apiKey);
   console.log('AlchemyAPI key: ' + apiKey + ' successfully written to api_key.txt');
   console.log('You are now ready to start using AlchemyAPI.');
   alchemyapi = new AlchemyAPI();

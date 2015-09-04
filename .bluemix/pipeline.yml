@@ -12,7 +12,6 @@ stages:
     build_type: npm
     script: |-
       #!/bin/bash
-      npm run initsubmodules
       npm install
       npm run build
 - name: Deploy

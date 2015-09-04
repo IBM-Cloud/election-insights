@@ -56,20 +56,11 @@ cf push "electioninsights"
 
 # Running the app locally
 
-Note: Loading `alchemyapi_node` as a git submodule from
-https://github.com/kauffecup/alchemyapi_node. There is a `initsubmodules` script
-that runs:
+All you need to do is:
 
 ```sh
-git submodule init
-git submodule update
-```
-
-This means all you need to do is:
-
-```sh
-npm run initsubmodules
 npm install
+npm run build
 npm start
 ```
 
@@ -109,8 +100,6 @@ push to git. Your build stage should look like:
 
 ```sh
 #!/bin/bash
-git submodule init
-git submodule update
 npm install
 npm run build
 ```

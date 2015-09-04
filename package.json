@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "initsubmodules": "git submodule init; git submodule update",
     "start": "node server/app.js",
     "build": "gulp build",
     "dev": "node server/app.js; gulp dev"
@@ -13,6 +12,7 @@
     "url": "https://github.com/IBM-Bluemix/election-insights.git"
   },
   "dependencies": {
+    "alchemyapi_node": "git+https://github.com/kauffecup/alchemyapi_node.git#news-support",
     "bluebird": "^2.9.34",
     "body-parser": "^1.13.3",
     "classnames": "^2.1.3",
