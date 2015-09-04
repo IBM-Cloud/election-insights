@@ -35,6 +35,7 @@ var returnInfo = [
 var newsScraper = {
   getEntities: function (start, end) {
     return new Promise(function (resolve, reject) {
+      if (!alchemy) reject(new error('Alchemy was never initialized'));
       start = start || 'now-1d';
       end = end || 'now';
       alchemy.news({

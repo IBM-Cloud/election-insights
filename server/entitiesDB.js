@@ -157,7 +157,8 @@ var EntitiesDB = {
         if (e) {
           reject(e);
         } else {
-          resolve(docs[0].date.getTime());
+          var date = docs[0] ? docs[0].date.getTime() : null;
+          resolve(date);
         }
       });
     });
@@ -172,7 +173,8 @@ var EntitiesDB = {
         if (e) {
           reject(e);
         } else {
-          resolve(docs[0].date.getTime());
+          var date = docs[0] ? docs[0].date.getTime() : null;
+          resolve(date);
         }
       });
     });

@@ -41,7 +41,8 @@ var _intervalID;
 var failureCount = 0;
 function getAndParseMostRecentArticles () {
   entitiesDB.getMinAndMaxDates().then(function (minAndMax) {
-    return newsScraper.getEntities(minAndMax.max/1000);
+    var start = minAndMax.max ? minAndMax.max/1000 : null;
+    return newsScraper.getEntities(start);
   }).then(function (entities) {
     return entitiesDB.uploadArticlesFromDocs(entities);
   }).catch(function (e) {
