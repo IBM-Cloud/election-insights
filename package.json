@@ -28,6 +28,7 @@
     "qs": "^4.0.0",
     "react": "^0.13.3",
     "react-bootstrap-datetimepicker": "0.0.18",
+    "react-bubble-chart": "0.0.2",
     "superagent": "^1.3.0"
   },
   "devDependencies": {
