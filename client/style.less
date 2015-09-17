@@ -100,6 +100,17 @@ a {
           overflow: visible;
           font-weight: bold;
         }
+        // reduce the size of text on medium bubbles
+        &.medium {
+          font-size: 0.8em;
+        }
+        // hide the text on small bubbles
+        &.small {
+          font-size: 0;
+          &:hover {
+            font-size: 0.8em;
+          }
+        }
       }
     }
   }
