@@ -50,7 +50,9 @@ var Actions = {
   initialize: function () {
     this.neutralPageView();
     requester.fetchMinAndMax().then(minAndMax => {
-      Dispatcher.dispatch({ actionType: Constants.MIN_AND_MAX, min: minAndMax.min, max: minAndMax.max });
+      // for now, limit min to being at most one week before the max
+      var min = Math.max(minAndMax.min, moment(minAndMax.max).subtract(1, 'week').unix()*1000);
+      Dispatcher.dispatch({ actionType: Constants.MIN_AND_MAX, min: min, max: minAndMax.max });
       this.getInsights(moment(minAndMax.max).subtract(1, 'day').unix()*1000, minAndMax.max);
     });
   },
