@@ -19,6 +19,7 @@ var router = express.Router();
 var alchemy = require('./alchemy');
 var entitiesDB = require('./entitiesDB');
 var path = require('path');
+var moment = require('moment');
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -56,6 +57,8 @@ router.get('/newsinsights', function (req, res) {
 /** Load the min and max date range */
 router.get('/minandmax', function (req, res) {
   entitiesDB.getMinAndMaxDates().then(function (minAndMax) {
+    // limit min to being at most one week before the max
+    minAndMax.min = Math.max(minAndMax.min, moment(minAndMax.max).subtract(1, 'week').unix()*1000);
     res.json(minAndMax)
   }).catch(function (e) {
     res.json(e);
