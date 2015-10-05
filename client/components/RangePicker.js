@@ -143,8 +143,10 @@ class NewsInsights extends React.Component {
             onMouseDown={this.onHandleLeftMouseDown}
             onTouchStart={this.onHandleLeftMouseDown}
             style={{
-              left: this.state.pos.x
-            }} />
+              left: this.state.pos.x - 22
+            }}>
+            <div className="displayed-handle"></div>
+          </div>
           <div className="value-container start" style={{left: this.state.pos.x}}>
             <div className="value start">{moment(start).format('MMM DD, h:mma')}</div>
           </div>
@@ -152,8 +154,10 @@ class NewsInsights extends React.Component {
             onMouseDown={this.onHandleRightMouseDown}
             onTouchStart={this.onHandleRightMouseDown}
             style={{
-              left: this.state.pos.x + this.state.pos.w
-            }} />
+              left: this.state.pos.x + this.state.pos.w - 22
+            }}>
+            <div className="displayed-handle"></div>
+          </div>
           <div className="value-container end" style={{left: this.state.pos.x + this.state.pos.w}}>
             <div className="value end">{moment(end).format('MMM DD, h:mma')}</div>
           </div>

@@ -151,11 +151,18 @@ a {
       }
       .handle {
         height: 120%;
-        width: 4px;
-        background: @secondary-text-color;
+        width: 44px;
+        background: transparent;
         top: -10%;
         position: absolute;
-        cursor: ew-resize;
+        .displayed-handle {
+          cursor: ew-resize;
+          height: 100%;
+          width: 4px;
+          background: @secondary-text-color;
+          position: relative;
+          left:  ~"calc(50% - 2px)";
+        }
       }
       .value-container {
         position: absolute;
