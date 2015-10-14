@@ -70,6 +70,10 @@ a {
       flex: 1 150px;
     }
 
+    .header-links {
+      display: flex;
+    }
+
     a {
       margin-left: 20px;
       &:hover, &:active {
@@ -246,20 +250,29 @@ a {
    }
 }
 
-@media (max-device-width : 736px) {
+@media (max-width : 736px) {
   .news-insights {
     .header {
       padding: 5px;
       .election-insights-title {
         height: initial;
         font-size: 1.2em;
+        justify-content: center;
       }
-      a {
-        font-size: 0.7em;
+      .header-links {
+        justify-content: space-around;
+        flex: 1 100%;
+        a {
+          text-align: center;
+          margin: 0 3px;
+          font-size: 0.7em;
+        }
+        
       }
     }
     .range-picker-container {
       .label {display: none;}
+      .range-picker .value {font-size: 0.8em;}
     }
     .bubble-chart-container {
       .bubble-legend {display: none;}
@@ -274,6 +287,16 @@ a {
       height: 100%;
       top: 0;
       left: 0;
+    }
+  }
+}
+
+@media (max-width : 300px) {
+  .news-insights {
+    .header {
+      .header-links {
+        flex-wrap: wrap;
+      }
     }
   }
 }
