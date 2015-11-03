@@ -23,6 +23,8 @@ var routes = require('./routes');
 var newsScraper = require('./newsScraper');
 var entitiesDB = require('./entitiesDB');
 
+var moment = require('moment');
+
 /** configure the express server */
 var app = express();
 app.set('port', process.env.PORT || 3000);
@@ -42,7 +44,7 @@ var failureCount = 0;
 function getAndParseMostRecentArticles () {
   entitiesDB.getMinAndMaxDates().then(function (minAndMax) {
     var start = minAndMax.max ? minAndMax.max/1000 : null;
-    return newsScraper.getEntities(start);
+    return newsScraper.getEntities(start + 1);
   }).then(function (entities) {
     return entitiesDB.uploadArticlesFromDocs(entities);
   }).catch(function (e) {
@@ -59,8 +61,10 @@ function parseForever () {
   getAndParseMostRecentArticles();
   // get more ever 15m
   _intervalID = setInterval(getAndParseMostRecentArticles, 15*60*1000);
-  // in 24h, reset the failure count and interval
+  // in 24h, reset the failure count and interval, and prune the database
+  // of everything older than 30d
   setTimeout(function () {
+    entitiesDB.pruneOlderThan30d();
     failureCount = 0;
     _intervalID && clearInterval(_intervalID);
     parseForever();

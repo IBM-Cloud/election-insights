@@ -18,6 +18,7 @@ var Promise = require('bluebird');
 var mongoose = require('mongoose');
 var String = mongoose.Schema.Types.String;
 var Number = mongoose.Schema.Types.Number;
+var moment = require('moment');
 
 // define schemas and models for articles
 var articleSchema = new mongoose.Schema({
@@ -246,6 +247,18 @@ var EntitiesDB = {
         };
       }
     }
+  },
+
+  /** Remove all articles and entities older than 30 days */
+  pruneOlderThan30d: function () {
+    var date = moment().startOf('day').subtract(30, 'day').unix()*1000;
+    var args = { date: { $lt: new Date(date) } };
+    Article.remove(args, function (e) {
+      if (e) { console.error(e); }
+    });
+    Entity.remove(args, function (e) {
+      if (e) { console.error(e); }
+    });
   },
 
   /**
