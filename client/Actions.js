@@ -17,7 +17,7 @@
 import moment     from 'moment';
 import Dispatcher from './Dispatcher';
 import Constants  from './constants/Constants';
-import requester  from './requester';
+import requester  from './requester'; 
 
 var _lastStart;
 var _lastEnd;
