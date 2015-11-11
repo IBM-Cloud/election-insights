@@ -14,12 +14,34 @@ color is dictated by the average sentiment around that entity.
 
 # Deploy to Bluemix
 
-prerequisite: create a [Bluemix](https://bluemix.net/), and register for an
+## Prerequisities:
+
+Create a [Bluemix](https://bluemix.net/), and register for an
 [Alchemy API Key](http://www.alchemyapi.com/api/register.html).
 
+Create a [MongoLab](https://mongolab.com) account, and create your database
+
+Once you have a MongoLab account and a database and run the command
+
+```sh
+cf cups mongolab_ei_jk -p '{"uri": "mongodb://username:password@yourdatabase/port/db_name"}'
+```
+
+*(You can name your service whatever you want but you'll need to update the
+manifest file)*
+
+You can find out the link of your database by clicking on the "Tools" menu.
+On the top of the page you'll see something like.
+
+```sh
+mongodb://username:password@yourdatabase/port/db_name
+```
 There are two ways to deploy this to Bluemix:
 
 ### Option 1: Click the button below:
+
+
+Now all you gots to do is click this button!
 
 [![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy)
 

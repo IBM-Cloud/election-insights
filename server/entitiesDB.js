@@ -47,17 +47,23 @@ var EntitiesDB = {
    */
   init: function () {
     // step one: load the credentials from either json or env variable
-    var mongoConfig;
+    var userProvided;
     if (process.env.VCAP_SERVICES) {
-      mongoConfig = JSON.parse(process.env.VCAP_SERVICES)['mongolab'];
+      userProvided = JSON.parse(process.env.VCAP_SERVICES)['user-provided'];
     } else {
       try {
         var config = require('./config.json');
-        mongoConfig = config['mongolab'];
+        userProvided = config['user-provided'];
       } catch (e) { console.error(e); }
     }
-    mongoConfig = mongoConfig[0].credentials;
-    mongoose.connect(mongoConfig.uri);
+    // step one part two: extract the uri from the userProvided object
+    var mongoURI;
+    for (var i = 0; i < userProvided.length; i++) {
+      if (userProvided[i].name.indexOf('mongolab') > -1) {
+        mongoURI = userProvided[i].credentials.uri;
+      }
+    }
+    mongoose.connect(mongoURI);
     // step two: connect mongoose
     return new Promise(function (resolve, reject) {
       db = mongoose.connection;

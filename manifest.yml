@@ -16,4 +16,4 @@ applications:
   memory: 256M
   services:
   - AlchemyAPI-7h
-  - MongoLab-Election
+  - mongolab_ei_jk
