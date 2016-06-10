@@ -15,6 +15,7 @@
 //------------------------------------------------------------------------------
 
 import React         from 'react';
+import ReactDOM      from 'react-dom';
 import Actions       from './Actions';
 import Constants     from './constants/Constants';
 import BubbleChart   from './components/BubbleChart';
@@ -23,6 +24,8 @@ import BubbleSlider  from './components/BubbleSlider';
 import ArticleList   from './components/ArticleList';
 import Header        from './components/Header';
 import InsightsStore from './stores/InsightsStore';
+
+require('./style.less');
 
 class NewsInsights extends React.Component {
   constructor (props) {
@@ -72,5 +75,5 @@ class NewsInsights extends React.Component {
   }
 };
 
-React.initializeTouchEvents(true);
-React.render(<NewsInsights />, document.body);
+var rootElement = document.getElementById('root');
+ReactDOM.render(<NewsInsights />, rootElement);

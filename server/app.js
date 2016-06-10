@@ -27,6 +27,23 @@ var moment = require('moment');
 
 /** configure the express server */
 var app = express();
+
+// if we're developing, use webpack middleware for module hot reloading
+if (process.env.NODE_ENV !== 'production') {
+  console.log('==> 🌎 using webpack');
+
+  // load and configure webpack
+  const webpack = require('webpack');
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
+  const config = require('../webpack/web.dev.config');
+
+  // setup middleware
+  const compiler = webpack(config);
+  app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: config.output.publicPath }));
+  app.use(webpackHotMiddleware(compiler));
+}
+
 app.set('port', process.env.PORT || 3000);
 app.use(logger('dev'));
 app.use(bodyParser.json());

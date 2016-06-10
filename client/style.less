@@ -22,7 +22,7 @@
 // get the page ready
 * { outline: none; box-sizing: border-box; }
 body { padding: 0; margin: 0; }
-html, body { height: 100%; width: 100%; position: absolute; top: 0; right: 0; overflow: hidden; }
+html, body, #root { height: 100%; width: 100%; position: absolute; top: 0; right: 0; overflow: hidden; }
 body, button, input {
   font-family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
   font-size: 1em;
@@ -267,7 +267,7 @@ a {
           margin: 0 3px;
           font-size: 0.7em;
         }
-        
+
       }
     }
     .range-picker-container {
@@ -344,7 +344,7 @@ input[type=range] {
     background: @secondary-text-color;
     border-radius: @track-radius;
   }
-  
+
   &::-webkit-slider-thumb {
     .thumb();
     -webkit-appearance: none;
@@ -365,7 +365,7 @@ input[type=range] {
   }
 
   &::-ms-track {
-    .track(); 
+    .track();
     background: transparent;
     border-color: transparent;
     border-width: @thumb-width 0;

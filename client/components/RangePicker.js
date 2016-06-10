@@ -15,7 +15,8 @@
 //------------------------------------------------------------------------------
 
 import React      from 'react';
-var moment = require('moment');
+import ReactDOM from 'react-dom';
+import moment from 'moment';
 import classnames from 'classnames';
 import Actions    from '../Actions';
 import Constants  from '../constants/Constants';
@@ -64,6 +65,7 @@ class NewsInsights extends React.Component {
     var clientX = e.touches ? e.touches[0].clientX : e.clientX;
     var dx = clientX - this._curX;
     this._curX = clientX;
+    var rangeDom = ReactDOM.findDOMNode(this.refs.rangePicker);
 
     var newX = this.state.pos.x;
     var newW = this.state.pos.w;
@@ -79,7 +81,7 @@ class NewsInsights extends React.Component {
 
       case 'rightHandle':
         var hasWidth = newW + dx > 10;
-        var inRightBoundary = newX + newW + dx < this.refs.rangePicker.getDOMNode().clientWidth
+        var inRightBoundary = newX + newW + dx < rangeDom.clientWidth
         if (hasWidth && inRightBoundary) {
           newW += dx;
         }
@@ -87,7 +89,7 @@ class NewsInsights extends React.Component {
 
       case 'slider':
         var inLeftBoundary = newX + dx > 0;
-        var inRightBoundary = newW + newX + dx < this.refs.rangePicker.getDOMNode().clientWidth;
+        var inRightBoundary = newW + newX + dx < rangeDom.clientWidth;
         if (inLeftBoundary && inRightBoundary) {
           newX += dx;
         }
@@ -111,7 +113,7 @@ class NewsInsights extends React.Component {
   /** Convert a time in ms to an x position relative to the beginning of the
     * slider. Can optionally provide a min and max object. defaults to using props. */
   _timeToPos (time, minAndMax) {
-    var node = this.refs.rangePicker.getDOMNode();
+    var node = ReactDOM.findDOMNode(this.refs.rangePicker);
     var min = minAndMax ? minAndMax.min : this.props.min;
     var max = minAndMax ? minAndMax.max : this.props.max;
     return (time - min) / (max - min) * node.clientWidth;
@@ -119,7 +121,7 @@ class NewsInsights extends React.Component {
 
   /** Convert an x position relative to the beginning of the slider to a time in ms */
   _posToTime (pos) {
-    var node = this.refs.rangePicker && this.refs.rangePicker.getDOMNode();
+    var node = this.refs.rangePicker && ReactDOM.findDOMNode(this.refs.rangePicker);;
     return node ? pos / node.clientWidth * (this.props.max - this.props.min) + this.props.min : 0;
   }
 

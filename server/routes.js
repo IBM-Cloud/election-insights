@@ -28,7 +28,7 @@ router.get('/', function (req, res) {
 
 /* Get terms of service */
 router.get('/tos', function (req, res) {
-  res.sendfile(path.resolve(__dirname, '../public/tos.html'));
+  res.sendFile(path.resolve(__dirname, '../public/tos.html'));
 });
 
 /**

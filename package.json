@@ -1,11 +1,39 @@
 {
   "name": "news-insights",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node server/app.js",
-    "build": "gulp build",
-    "dev": "node server/app.js; gulp dev"
+    "start": "better-npm-run start",
+    "build": "better-npm-run build",
+    "dev": "better-npm-run dev",
+    "debug": "better-npm-run debug",
+    "tos-css": "lessc client/tos.less | postcss -u autoprefixer -o public/tos.css"
+  },
+  "betterScripts": {
+    "build": {
+      "command": "webpack --config webpack/web.prod.config.js --progress --colors && npm run tos-css",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "start": {
+      "command": "node server/app.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "dev": {
+      "command": "node server/app.js",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "debug": {
+      "command": "node-debug server/app.js",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
   },
   "repository": {
     "type": "git",
@@ -13,36 +41,48 @@
   },
   "dependencies": {
     "alchemyapi_node": "git+https://github.com/kauffecup/alchemyapi_node.git#news-support",
-    "bluebird": "^2.9.34",
-    "body-parser": "^1.13.3",
-    "classnames": "^2.1.3",
-    "d3": "^3.5.6",
-    "express": "^4.13.3",
-    "flux": "^2.0.3",
+    "better-npm-run": "0.0.8",
+    "bluebird": "^3.4.0",
+    "body-parser": "^1.15.1",
+    "classnames": "^2.2.5",
+    "d3": "^3.5.17",
+    "express": "^4.13.4",
+    "flux": "^2.1.1",
     "keymirror": "^0.1.1",
-    "lodash": "^3.10.1",
-    "moment": "^2.10.6",
-    "mongoose": "^4.1.3",
-    "morgan": "^1.6.1",
-    "object-assign": "^3.0.0",
-    "qs": "^4.0.0",
-    "react": "^0.13.3",
-    "react-bootstrap-datetimepicker": "0.0.18",
-    "react-bubble-chart": "^0.1.2",
-    "superagent": "^1.3.0"
+    "lodash": "^4.13.1",
+    "moment": "^2.13.0",
+    "mongoose": "^4.4.20",
+    "morgan": "^1.7.0",
+    "object-assign": "^4.1.0",
+    "react": "^15.1.0",
+    "react-bubble-chart": "^0.4.0",
+    "react-dom": "^15.1.0",
+    "superagent": "^2.0.0"
   },
   "devDependencies": {
-    "autoprefixer": "^5.2.0",
-    "babelify": "^6.1.3",
-    "browserify": "^11.0.1",
-    "csswring": "^3.0.5",
-    "envify": "^3.4.0",
-    "gulp": "^3.9.0",
-    "gulp-less": "^3.0.3",
-    "gulp-postcss": "^5.1.9",
-    "gulp-uglify": "^1.2.0",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.2.3"
+    "autoprefixer": "^6.3.6",
+    "babel": "^6.5.2",
+    "babel-core": "^6.9.1",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-react-transform": "^2.0.2",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
+    "css-loader": "^0.23.1",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
+    "postcss-cli": "^2.5.2",
+    "postcss-loader": "^0.9.1",
+    "raw-loader": "^0.5.1",
+    "react-hot-loader": "^1.3.0",
+    "react-transform-catch-errors": "^1.0.2",
+    "react-transform-hmr": "^1.0.4",
+    "redbox-react": "^1.2.6",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.1",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-hot-middleware": "^2.10.0"
+  },
+  "engines": {
+    "node": ">=6.0.0"
   }
 }
