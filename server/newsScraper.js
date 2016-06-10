@@ -50,9 +50,8 @@ var newsScraper = {
           console.error(response);
           reject(response);
         } else {
-          if (response.result.docs && response.result.docs.length) {
-            console.log('loaded ' + response.result.docs.length + ' articles from AlchemyAPI');
-          }
+          var length = response.result.docs ? response.result.docs.length : 0
+          console.log('loaded ' + length + ' articles from AlchemyAPI');
           resolve(response.result.docs);
         }
       }.bind(this));
