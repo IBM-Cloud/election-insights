@@ -17,7 +17,7 @@
 import moment     from 'moment';
 import Dispatcher from './Dispatcher';
 import Constants  from './constants/Constants';
-import requester  from './requester'; 
+import requester  from './requester';
 
 var _lastStart;
 var _lastEnd;
@@ -48,7 +48,6 @@ var Actions = {
   },
 
   initialize: function () {
-    this.neutralPageView();
     requester.fetchMinAndMax().then(minAndMax => {
       Dispatcher.dispatch({ actionType: Constants.MIN_AND_MAX, min: minAndMax.min, max: minAndMax.max });
       this.getInsights(moment(minAndMax.max).subtract(1, 'day').unix()*1000, minAndMax.max);
@@ -67,7 +66,6 @@ var Actions = {
 
   loadArticlesForEntity: function (entity) {
     entity = typeof entity === 'string' ? entity : entity._id;
-    this.entityPageView(entity);
     Dispatcher.dispatch({ actionType: Constants.ENTITY_SELECTED, entity: entity});
     requester.fetchArticlesForEntity(entity, _lastStart, _lastEnd).then(articles => {
       Dispatcher.dispatch({ actionType: Constants.ARTICLES_LOADED, articles: articles, entity: entity });
@@ -75,22 +73,7 @@ var Actions = {
   },
 
   deselectEntity: function () {
-    this.neutralPageView();
     Dispatcher.dispatch({ actionType: Constants.ENTITY_SELECTED});
-  },
-
-  neutralPageView: function () {
-    window.location.assign("/#/");
-    if (typeof ga !== 'undefined') {
-      ga('send', 'pageview');
-    }
-  },
-
-  entityPageView: function (entity) {
-    window.location.assign("/#/entity/" + entity);
-    if (typeof ga !== 'undefined') {
-      ga('send', 'pageview', '/entity/' + entity);
-    }
   }
 }
 
