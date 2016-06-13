@@ -89,8 +89,8 @@ npm start
 There's also a helper `npm dev` that kicks off the server and runs `gulp dev`
 which handles watchify and re-compiling less->css when files change.
 
-Make `server/config.json` that is the same structure as `VCAP_SERVICES` is on
-Bluemix. For example:
+Make `server/VCAP_SERVICES.json` that is the same structure as `VCAP_SERVICES`
+is on Bluemix. For example:
 
 ```json
 {

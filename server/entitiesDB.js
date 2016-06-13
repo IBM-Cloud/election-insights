@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// Copyright IBM Corp. 2015
+// Copyright IBM Corp. 2016
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,23 +14,24 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-var Promise = require('bluebird');
-var mongoose = require('mongoose');
-var String = mongoose.Schema.Types.String;
-var Number = mongoose.Schema.Types.Number;
-var moment = require('moment');
+const Promise = require('bluebird');
+const mongoose = require('mongoose');
+const String = mongoose.Schema.Types.String;
+const Number = mongoose.Schema.Types.Number;
+const moment = require('moment');
+const appEnv = require('./appEnv');
 
 // define schemas and models for articles
-var articleSchema = new mongoose.Schema({
+const articleSchema = new mongoose.Schema({
   _id: String,
   title: String,
   date: mongoose.Schema.Types.Date,
   url: String
 });
-var Article = mongoose.model('Article', articleSchema);
+const Article = mongoose.model('Article', articleSchema);
 
 // define schemas and models for entities
-var entitySchema = new mongoose.Schema({
+const entitySchema = new mongoose.Schema({
   _id: String,
   text: String,
   count: Number,
@@ -38,35 +39,20 @@ var entitySchema = new mongoose.Schema({
   date: Date,
   article_id: String
 });
-var Entity = mongoose.model('Entity', entitySchema);
+const Entity = mongoose.model('Entity', entitySchema);
 
 // DB object with fun methods
-var EntitiesDB = {
+const EntitiesDB = {
   /**
    * Initialize the database connection
    */
   init: function () {
-    // step one: load the credentials from either json or env variable
-    var userProvided;
-    if (process.env.VCAP_SERVICES) {
-      userProvided = JSON.parse(process.env.VCAP_SERVICES)['user-provided'];
-    } else {
-      try {
-        var config = require('./config.json');
-        userProvided = config['user-provided'];
-      } catch (e) { console.error(e); }
-    }
-    // step one part two: extract the uri from the userProvided object
-    var mongoURI;
-    for (var i = 0; i < userProvided.length; i++) {
-      if (userProvided[i].name.indexOf('mongolab') > -1) {
-        mongoURI = userProvided[i].credentials.uri;
-      }
-    }
+    // step one: initialize mongoose
+    const mongoURI = appEnv.getService(/mongolab/ig).credentials.uri;
     mongoose.connect(mongoURI);
     // step two: connect mongoose
-    return new Promise(function (resolve, reject) {
-      db = mongoose.connection;
+    return new Promise((resolve, reject) => {
+      const db = mongoose.connection;
       db.on('error', reject);
       db.once('open', resolve);
     });
@@ -77,17 +63,14 @@ var EntitiesDB = {
    * specify a timeframe for the grouping, and can also specify the
    * number of entities to return.
    */
-  aggregateEntities: function (start, end, limit) {
-    return new Promise(function (resolve, reject) {
-      start = start || 0;
-      end = end || 9999999999999;
-      limit = limit || 100;
+  aggregateEntities: function (start = 0, end = 9999999999999, limit = 100) {
+    return new Promise((resolve, reject) => {
       Entity.aggregate(
         { $match: { date: { $gte: new Date(start) , $lt: new Date(end) } } },
         { $group: { _id: {'$toLower' : '$text'}, value: { $sum: '$count'}, sentiment: { $avg: '$sentiment'} } },
         { $sort: { value: -1} },
         { $limit: limit },
-        function (err, res) {
+        (err, res) => {
           if (err) {
             console.error(err);
             reject(err);
@@ -104,13 +87,13 @@ var EntitiesDB = {
    * that mention that entity.
    */
   getArticlesForEntity: function (entity, start, end) {
-    return this.getArticleIdsForEntity(entity, start, end).then(function (articleIds) {
-      return new Promise(function (resolve, reject) {
+    return this.getArticleIdsForEntity(entity, start, end).then(articleIds => {
+      return new Promise((resolve, reject) => {
         Article.find(
           { '_id': { $in: articleIds} }, // get all articles by id
           null,                          // return all columns
           { sort: {date: -1}},           // sort by date descending and only get 100
-          function(err, articles) {
+          (err, articles) => {
             if (err) {
               console.error(err);
               reject(err);
@@ -127,14 +110,12 @@ var EntitiesDB = {
    * Given an entities text and a timeframe, resolve with the article
    * ids that contain that entity.
    */
-  getArticleIdsForEntity: function (entity, start, end) {
-    return new Promise(function (resolve, reject) {
-      start = start || 0;
-      end = end || 9999999999999;
+  getArticleIdsForEntity: function (entity, start = 0, end = 9999999999999) {
+    return new Promise((resolve, reject) => {
       Entity.aggregate(
         { $match: { text: new RegExp('^' + entity + '$', 'i'), date: { $gte: new Date(start) , $lt: new Date(end) } } },
         { $group: { _id: '$text', value: { $push: '$article_id'} } },
-        function (err, res) {
+        (err, res) => {
           if (err) {
             console.error(err);
             reject(err);
@@ -150,21 +131,19 @@ var EntitiesDB = {
    * Resolve with an object that contains the min and max dates in the Articles DB.
    */
   getMinAndMaxDates: function () {
-    return Promise.join(this._getMinDate(), this._getMaxDate(), function (min, max) {
-      return ({ min: min, max: max});
-    });
+    return Promise.join(this._getMinDate(), this._getMaxDate(), (min, max) => ({ min, max }));
   },
 
   /**
    * Resolve with the min date in the Articles DB.
    */
   _getMinDate: function () {
-    return new Promise(function (resolve, reject) {
-      Article.find({}, 'date', {limit: 1, sort: {date: 1}}, function (e, docs) {
+    return new Promise((resolve, reject) => {
+      Article.find({}, 'date', {limit: 1, sort: {date: 1}}, (e, docs) => {
         if (e) {
           reject(e);
         } else {
-          var date = docs[0] ? docs[0].date.getTime() : null;
+          const date = docs[0] ? docs[0].date.getTime() : null;
           resolve(date);
         }
       });
@@ -175,12 +154,12 @@ var EntitiesDB = {
    * Resolve with the max date in the Articles DB.
    */
   _getMaxDate: function () {
-    return new Promise(function (resolve, reject) {
-      Article.find({}, 'date', {limit: 1, sort: {date: -1}}, function (e, docs) {
+    return new Promise((resolve, reject) => {
+      Article.find({}, 'date', {limit: 1, sort: {date: -1}}, (e, docs) => {
         if (e) {
           reject(e);
         } else {
-          var date = docs[0] ? docs[0].date.getTime() : null;
+          const date = docs[0] ? docs[0].date.getTime() : null;
           resolve(date);
         }
       });
@@ -197,36 +176,32 @@ var EntitiesDB = {
     // Article.create(docs.map(this._adaptFromAlchemyDoc), function (args) {});
     // but I don't believe there's a way to do that with the upsert scheme.
     // so... until we figure that out, we'll live this method as one request per document
-    docs.forEach(function (doc) {
+    docs.forEach(doc => {
       if (doc) {
-        var articleAndEntitityPrimitives = this._adaptFromAlchemyDoc(doc);
+        const articleAndEntitityPrimitives = this._adaptFromAlchemyDoc(doc);
         if (articleAndEntitityPrimitives) {
-          var articlePrimitive = articleAndEntitityPrimitives.article;
+          const articlePrimitive = articleAndEntitityPrimitives.article;
           if (articlePrimitive) {
-            Article.findByIdAndUpdate(articlePrimitive._id, articlePrimitive, {upsert: true}, function (args) {
-              var mattdamon;
-            });
+            Article.findByIdAndUpdate(articlePrimitive._id, articlePrimitive, {upsert: true}, () => {});
           }
-          var entityPrimitives = articleAndEntitityPrimitives.entities;
+          const entityPrimitives = articleAndEntitityPrimitives.entities;
           if (entityPrimitives && entityPrimitives.length) {
-            entityPrimitives.forEach(function (ep) {
-              Entity.findByIdAndUpdate(ep._id, ep, {upsert: true}, function (args) {
-                var mattdamon;
-              });
-            });
+            entityPrimitives.forEach(ep =>
+              Entity.findByIdAndUpdate(ep._id, ep, {upsert: true}, () => {})
+            );
           }
         }
       }
-    }.bind(this));
+    });
   },
 
   /**
    * Given a response from Alchemy, create a new Article and Entities primitives
    */
   _adaptFromAlchemyDoc: function (doc) {
-    var enrichedUrl = doc.source && doc.source.enriched && doc.source.enriched.url;
-    var article;
-    var entities;
+    const enrichedUrl = doc.source && doc.source.enriched && doc.source.enriched.url;
+    let article;
+    let entities;
     if (enrichedUrl) {
       article = {
         _id: doc.id,
@@ -234,18 +209,16 @@ var EntitiesDB = {
         date: new Date(doc.timestamp * 1000),
         url: enrichedUrl.url
       }
-      entities = enrichedUrl.entities.map(function (e) {
+      entities = enrichedUrl.entities.map(({ text, count, sentiment }) => {
         return {
-          _id: e.text + doc.id,
+          _id: text + doc.id,
           article_id: doc.id,
           date: new Date(doc.timestamp * 1000),
-          text: e.text,
-          count: e.count,
-          sentiment: e.sentiment.score
+          text: text,
+          count: count,
+          sentiment: sentiment.score
         }
-      }).filter(function (e) {
-        return e.text.length > 1;
-      });
+      }).filter(({ text }) => text.length > 1);
       if (entities.length) {
         return {
           article: article,
@@ -257,12 +230,12 @@ var EntitiesDB = {
 
   /** Remove all articles and entities older than 30 days */
   pruneOlderThan30d: function () {
-    var date = moment().startOf('day').subtract(30, 'day').unix()*1000;
-    var args = { date: { $lt: new Date(date) } };
-    Article.remove(args, function (e) {
+    const date = moment().startOf('day').subtract(30, 'day').unix()*1000;
+    const args = { date: { $lt: new Date(date) } };
+    Article.remove(args, e => {
       if (e) { console.error(e); }
     });
-    Entity.remove(args, function (e) {
+    Entity.remove(args, e => {
       if (e) { console.error(e); }
     });
   },
@@ -271,11 +244,9 @@ var EntitiesDB = {
    * Remove all entities with a text length of 1
    */
   pruneCharEntities: function () {
-    Entity.remove({$where:"this.text.length == 1"}, function (e) {
-      if (e) {
-        console.error(e);
-      }
-    })
+    Entity.remove({$where:"this.text.length == 1"}, e => {
+      if (e) { console.error(e); }
+    });
   }
 }
 

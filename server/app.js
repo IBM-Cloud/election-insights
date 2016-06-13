@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// Copyright IBM Corp. 2015
+// Copyright IBM Corp. 2016
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,18 +15,18 @@
 //------------------------------------------------------------------------------
 
 /** Module dependencies. */
-var express = require('express');
-var bodyParser = require('body-parser');
-var path = require('path');
-var logger = require('morgan');
-var routes = require('./routes');
-var newsScraper = require('./newsScraper');
-var entitiesDB = require('./entitiesDB');
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+const logger = require('morgan');
+const routes = require('./routes');
+const newsScraper = require('./newsScraper');
+const entitiesDB = require('./entitiesDB');
 
-var moment = require('moment');
+const moment = require('moment');
 
 /** configure the express server */
-var app = express();
+const app = express();
 
 // if we're developing, use webpack middleware for module hot reloading
 if (process.env.NODE_ENV !== 'production') {
@@ -52,19 +52,19 @@ app.use(express.static(path.resolve(__dirname, '../public')));
 app.use('/', routes);
 
 /** Start her up, boys */
-app.listen(app.get('port'), function() {
-  console.log('Express server listening on port ' + app.get('port'));
+app.listen(app.get('port'), () => {
+  console.log(`Express server listening on port ${app.get('port')}`);
 });
 
-var _intervalID;
-var failureCount = 0;
-function getAndParseMostRecentArticles () {
-  entitiesDB.getMinAndMaxDates().then(function (minAndMax) {
-    var start = minAndMax.max ? minAndMax.max/1000 : null;
-    return newsScraper.getEntities(start + 1);
-  }).then(function (entities) {
-    return entitiesDB.uploadArticlesFromDocs(entities);
-  }).catch(function (e) {
+let _intervalID;
+let failureCount = 0;
+const getAndParseMostRecentArticles = () => {
+  entitiesDB.getMinAndMaxDates().then(minAndMax => {
+    const start = minAndMax.max ? minAndMax.max/1000 : null;
+    return newsScraper(start + 1);
+  }).then(entities =>
+    entitiesDB.uploadArticlesFromDocs(entities)
+  ).catch(e => {
     console.log('article scraping failed');
     console.error(e);
     if (++failureCount > 5) {
@@ -73,14 +73,14 @@ function getAndParseMostRecentArticles () {
   });
 }
 
-function parseForever () {
+const parseForever = () => {
   // get them now
   getAndParseMostRecentArticles();
   // get more ever 15m
   _intervalID = setInterval(getAndParseMostRecentArticles, 15*60*1000);
   // in 24h, reset the failure count and interval, and prune the database
   // of everything older than 30d
-  setTimeout(function () {
+  setTimeout(() => {
     entitiesDB.pruneOlderThan30d();
     failureCount = 0;
     _intervalID && clearInterval(_intervalID);
