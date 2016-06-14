@@ -43,12 +43,11 @@ const returnInfo = [
 ];
 
 /**
- * Our news scraper.
- * Currently only has one method - `getEntities` which handles querying AlchemyAPI.
+ * Our news scraper. Handles Querying AlchemyAPI
  * The query is focused around election articles with a confidence >= 0.75. We resolve
  * with entity sentiment, count, and text as well as the articles title and URL.
  */
-const newsScraper = (start, end) =>
+module.exports = (start, end) =>
   new Promise((resolve, reject) => {
     if (!alchemy) reject(new error('Alchemy was never initialized'));
     start = start || 'now-1d';
@@ -71,5 +70,3 @@ const newsScraper = (start, end) =>
       }
     });
   });
-
-module.exports = newsScraper;
