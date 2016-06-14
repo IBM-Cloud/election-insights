@@ -15,18 +15,10 @@
 //------------------------------------------------------------------------------
 
 import React from 'react';
-import Actions  from '../Actions';
+import moment from 'moment';
 
-export default ({ numBubbles }) =>
-  <div className="bubble-selector">
-    <div className="num-bubble-label">{numBubbles + (numBubbles === 1 ? " Circle" : " Circles")}</div>
-    <input
-      className="slider"
-      type="range"
-      min="1"
-      max="250"
-      value={numBubbles}
-      steps="250"
-      onChange={e => Actions.changeNumBubbles(e.target.value)} />
-    <div className="help-text">(might need to adjust for screen size or if animations are laggy)</div>
+export default ({ article: { url, title, date } }) =>
+  <div className="article">
+    <a className="title-link" href={url} target="_blank">{title}</a>
+    <div className="article-date">{moment(date).format('MMMM DD YYYY')}</div>
   </div>

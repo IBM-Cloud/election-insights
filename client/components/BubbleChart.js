@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// Copyright IBM Corp. 2015
+// Copyright IBM Corp. 2016
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ import React            from 'react';
 import ReactBubbleChart from 'react-bubble-chart';
 import Actions          from '../Actions';
 
-var colorLegend = [
+const colorLegend = [
   // reds from dark to light
   {color: "#67000d", textColor: '#fee0d2', text: 'Negative'},
   {color: "#a50f15", textColor: '#fee0d2'},
@@ -41,25 +41,18 @@ var colorLegend = [
   {color: "#08306b", textColor: '#deebf7', text: 'Positive'}
 ];
 
-class BubbleChart extends React.Component {
-  render () {
-    var data = this.props.data.map(d => ({
+export default ({ data }) =>
+  <ReactBubbleChart
+    colorLegend={colorLegend}
+    legend={true}
+    selectedColor="#737373"
+    selectedTextColor="#d9d9d9"
+    fixedDomain={{min: -1, max: 1}}
+    onClick={Actions.loadArticlesForEntity.bind(Actions)}
+    data={data.map(d => ({
       _id: d._id,
       value: d.value,
       colorValue: d.sentiment,
       selected: d.selected
-    }));
-
-    return <ReactBubbleChart
-      colorLegend={colorLegend}
-      legend={true}
-      data={data}
-      selectedColor="#737373"
-      selectedTextColor="#d9d9d9"
-      fixedDomain={{min: -1, max: 1}}
-      onClick={Actions.loadArticlesForEntity.bind(Actions)}
-    />;
-  }
-}
-
-module.exports = BubbleChart;
+    }))}
+  />

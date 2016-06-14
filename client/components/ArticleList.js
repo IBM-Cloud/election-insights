@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// Copyright IBM Corp. 2015
+// Copyright IBM Corp. 2016
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,37 +16,14 @@
 
 import React      from 'react';
 import classnames from 'classnames';
-import moment     from 'moment';
 import Actions    from '../Actions';
+import Article from './Article';
 
-class Article extends React.Component {
-  render () {
-    var a = this.props.article;
-    return (
-      <div className="article">
-        <a className="title-link" href={a.url} target="_blank">{a.title}</a>
-        <div className="article-date">{moment(a.date).format('MMMM DD YYYY')}</div>
-      </div>
-    );
-  }
-}
-
-class ArticleList extends React.Component {
-  render () {
-    var articles = this.props.articles.map(a => <Article article={a} />);
-    var classes = classnames('article-list', {
-      'has-entity': !!this.props.selectedEntity
-    });
-    return (
-      <div className={classes} onClick={e => e.stopPropagation()}>
-        <button className="back" onClick={Actions.deselectEntity.bind(Actions)}>x</button>
-        <h2>{this.props.selectedEntity && (this.props.selectedEntity._id || this.props.selectedEntity)}</h2>
-        <ul className="the-articles">
-          {articles}
-        </ul>
-      </div>
-    );
-  }
-}
-
-module.exports = ArticleList;
+export default ({ articles, selectedEntity }) =>
+  <div className={classnames('article-list', { 'has-entity': !!selectedEntity })} onClick={e => e.stopPropagation()}>
+    <button className="back" onClick={() => Actions.deselectEntity()}>x</button>
+    <h2>{selectedEntity && (selectedEntity._id || selectedEntity)}</h2>
+    <ul className="the-articles">{articles.map(a =>
+      <Article article={a} />
+    )}</ul>
+  </div>
